@@ -20,6 +20,8 @@
 
     <!-- App CSS -->
     <link id="theme-style" rel="stylesheet" href="{{ asset('template/assets/css/portal.css') }}" />
+
+
   </head>
 
   <body class="app">

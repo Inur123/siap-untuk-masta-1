@@ -1,81 +1,3 @@
-{{-- <aside class="left-sidebar">
-
-    <div>
-      <div class="brand-logo d-flex align-items-center justify-content-between">
-        <a href="./index.html" class="text-nowrap logo-img">
-          <img src="../assets/images/logos/logo-light.svg" alt="" />
-        </a>
-        <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-          <i class="ti ti-x fs-8"></i>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-        <ul id="sidebarnav">
-          <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
-            <span class="hide-menu">Home</span>
-          </li>
-          <li class="sidebar-item">
-            <a class="sidebar-link {{ request()->is(auth()->user()->role === 'mahasiswa' ? 'mahasiswa/dashboard' : 'admin/dashboard') ? 'active' : '' }}"
-               href="{{ url(auth()->user()->role === 'mahasiswa' ? 'mahasiswa/dashboard' : 'admin/dashboard') }}"
-               aria-expanded="false">
-                <span>
-                    <iconify-icon icon="solar:home-smile-bold-duotone" class="fs-6"></iconify-icon>
-                </span>
-                <span class="hide-menu">Dashboard</span>
-            </a>
-          </li>
-
-          <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
-            <span class="hide-menu">Data</span>
-          </li>
-
-          @if(auth()->user()->role === 'admin')
-            <li class="sidebar-item">
-                <a class="sidebar-link {{ request()->is('admin/users') ? 'active' : '' }}" href="{{ url('admin/users') }}" aria-expanded="false">
-                    <span>
-                        <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
-                    </span>
-                    <span class="hide-menu">User</span>
-                </a>
-            </li>
-          @endif
-
-
-          @if(auth()->user()->role === 'admin')
-          <li class="sidebar-item">
-              <a class="sidebar-link {{ request()->routeIs('admin.create_announcement') ? 'active' : '' }}" href="{{ route('admin.create_announcement') }}" aria-expanded="false">
-                <span>
-                    <!-- Ganti dengan ikon yang valid -->
-                    <iconify-icon icon="solar:megaphone-bold-duotone" class="fs-6"></iconify-icon>
-                </span>
-                  <span class="hide-menu">Pengumuman</span>
-              </a>
-          </li>
-      @endif
-
-
-        </ul>
-        <div class="unlimited-access hide-menu bg-primary-subtle position-relative mb-7 mt-7 rounded-3">
-          <div class="d-flex">
-            <div class="unlimited-access-title me-3">
-              <h6 class="fw-semibold fs-4 mb-6 text-dark w-75">Upgrade to pro</h6>
-              <a href="#" target="_blank" class="btn btn-primary fs-2 fw-semibold lh-sm">Buy Pro</a>
-            </div>
-            <div class="unlimited-access-img">
-              <img src="../assets/images/backgrounds/rocket.png" alt="" class="img-fluid">
-            </div>
-          </div>
-        </div>
-      </nav>
-
-    </div>
-
-  </aside> --}}
-
-
   <header class="app-header fixed-top">
     <div class="app-header-inner">
       <div class="container-fluid py-2">
@@ -120,7 +42,7 @@
                   href="#"
                   role="button"
                   aria-expanded="false"
-                  ><img src="{{ asset('template/assets/images/user.png') }}" alt="user profile"
+                  ><img src="{{ asset('template/assets/images/icon-profile.png') }}" alt="user profile"
                 /></a>
                 <ul
                   class="dropdown-menu"
@@ -156,7 +78,7 @@
           >&times;</a
         >
         <div class="app-branding">
-          <a class="app-logo" href="index.html"
+          <a class="app-logo" href=""
             ><img
               class="logo-icon me-2"
               src="{{ asset('template/assets/images/logo-masta24.png') }}"
@@ -198,7 +120,7 @@
             @if(auth()->user()->role === 'admin')
             <li class="nav-item has-submenu {{ request()->is('admin/*') ? 'active' : '' }}">
                 <a
-                    class="nav-link submenu-toggle {{ request()->is('admin/operators*') || request()->is('admin/operators*') ||request()->is('admin/users*') ? 'active' : '' }}"
+                    class="nav-link submenu-toggle {{ request()->is('admin/operators*') || request()->is('admin/operators*') || request()->is('admin/mahasiswa*') ||request()->is('admin/users*') ? 'active' : '' }}"
                     href="#"
                     data-bs-toggle="collapse"
                     data-bs-target="#submenu-1"
@@ -262,64 +184,6 @@
               ><!--//nav-link-->
             </li>
             @endif
-            {{-- absensi segera hadir --}}
-            {{-- <li class="nav-item has-submenu">
-              <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a
-                class="nav-link submenu-toggle"
-                href="#"
-                data-bs-toggle="collapse"
-                data-bs-target="#submenu-2"
-                aria-expanded="false"
-                aria-controls="submenu-2"
-              >
-                <span class="nav-icon">
-                  <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
-                      <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                      <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-                    </svg>
-                </span>
-                <span class="nav-link-text">Absensi</span>
-                <span class="submenu-arrow">
-                  <svg
-                    width="1em"
-                    height="1em"
-                    viewBox="0 0 16 16"
-                    class="bi bi-chevron-down"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                    />
-                  </svg>
-                  </span
-                ><!--//submenu-arrow--> </a
-              ><!--//nav-link-->
-              <div
-                id="submenu-2"
-                class="collapse submenu submenu-2"
-                data-bs-parent="#menu-accordion"
-              >
-                <ul class="submenu-list list-unstyled">
-                  <li class="submenu-item">
-                    <a class="submenu-link" href="notifications.html"
-                      >Data Absen</a
-                    >
-                  </li>
-                  <li class="submenu-item">
-                    <a class="submenu-link" href="account.html">Absen Kegiatan</a>
-                  </li>
-                  <!-- <li class="submenu-item">
-                    <a class="submenu-link" href="settings.html">Mahasiswa</a>
-                  </li>
-                   -->
-                </ul>
-              </div>
-            </li> --}}
-
             <!--//nav-item-->
           </ul>
           <!--//app-menu-->

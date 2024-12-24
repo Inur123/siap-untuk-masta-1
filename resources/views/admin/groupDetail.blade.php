@@ -3,7 +3,9 @@
 @section('sidebar')
     @include('layouts.sidebar')
 @endsection
-
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 @section('content')
     <div class="container">
         <h1 class="text-2xl font-bold mb-2">Detail Kelompok {{ $groupDetail->kelompok }}</h1>
@@ -21,7 +23,7 @@
         <a href="{{ route('admin.exportGroupMembers', ['kelompok' => $kelompok]) }}" class="btn btn-success mb-2">Export Excel</a>
         <a href="{{ route('admin.exportGroupMembersToWord', ['kelompok' => $kelompok]) }}" class="btn btn-info mb-2">Export Word</a>
         <div style="overflow-x: auto; white-space: nowrap; border: 1px solid #ddd; border-radius: 5px;">
-            <table class="table-auto w-full mt-2 table table-bordered" style="width: 100%; border-collapse: collapse;">
+            <table class="table-auto w-full mt-2 table table-bordered" style="width: 100%; border-collapse: collapse;" id="example">
                 <thead>
                     <tr style="background-color: #f8f9fa;">
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">No</th>
@@ -64,6 +66,11 @@
                     @endforeach
                 </tbody>
             </table>
+            <script>
+                $(document).ready(function () {
+                    new DataTable('#example');
+                });
+            </script>
         </div>
 
         <a href="{{ route('admin.groups') }}" class="text-blue-500 hover:underline mt-4 block">Kembali ke Daftar Kelompok</a>

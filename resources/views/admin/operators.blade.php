@@ -3,7 +3,13 @@
 @section('sidebar')
 @include('layouts.sidebar')
 @endsection
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 @section('content')
+@if (session('success'))
+<div class="alert alert-success">{{ session('success') }}</div>
+@endif
     <div class="container">
         <h1 class="mb-2">Data Pemandu</h1>
         <div class="mt-2">
@@ -14,7 +20,7 @@
          </a>
         </div>
         <!-- Display Operators -->
-        <table class="table table-bordered mt-2">
+        <table class="table table-bordered mt-2" id="example">
             <thead>
                 <tr>
                     <th>No</th>
@@ -51,31 +57,10 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="pagination-wrapper" style="margin-top: 20px; text-align: end;">
-            <style>
-                /* Inactive page links */
-                .pagination .page-link {
-                    background-color: white; /* White background for inactive links */
-                    border-color: #28a745; /* Green border for inactive links */
-                    color: #28a745; /* Green text for inactive links */
-                }
-
-                .pagination .page-link:hover {
-                    background-color: #218838; /* Dark green on hover */
-                    border-color: #1e7e34;
-                    color: white;  /* Dark green border on hover */
-                }
-
-                /* Active page link */
-                .pagination .active .page-link {
-                    background-color: #28a745; /* Green background for active link */
-                    border-color: #1e7e34; /* Darker green border for active link */
-                    color: white; /* White text for active link */
-                }
-            </style>
-
-            {{ $operators->links('pagination::bootstrap-5') }}
-        </div>
-
+        <script>
+            $(document).ready(function () {
+                new DataTable('#example');
+            });
+        </script>
     </div>
 @endsection
