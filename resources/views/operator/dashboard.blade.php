@@ -66,6 +66,7 @@
                 <thead>
                     <tr style="background-color: #f8f9fa;">
                         <th style="padding: 8px; text-align: center;">No</th>
+                        <th style="padding: 8px; text-align: center;">QR Code</th>
                         <th style="padding: 8px; text-align: center;">Nama</th>
                         <th style="padding: 8px; text-align: center;">NIM</th>
                         <th style="padding: 8px; text-align: center;">Email</th>
@@ -83,6 +84,8 @@
                 @foreach ($students as $index => $student)
                     <tr>
                         <td>{{ $index + 1 }}</td>
+                        <td>
+                            <img src="{{ asset('storage/' . $student->qr_code) }}" class="img-fluid rounded-start" alt="QR Code" style="max-width: 100px; max-height: 100px;">
                         <td>{{ $student->name }}</td>
                         <td>{{ $student->nim }}</td>
                         <td>{{ $student->email }}</td>
@@ -94,7 +97,7 @@
                         <td>{{ $student->jeniskelamin }}</td>
                         <td>
                             @if ($student->file)
-                                <a href="{{ asset('storage/' . $student->file) }}" class="btn btn-info btn-sm" target="_blank">
+                                <a href="{{ asset('storage/' . $student->file) }}"target="_blank">
                                     <i class="fas fa-file-download"></i> Lihat File
                                 </a>
                             @else
