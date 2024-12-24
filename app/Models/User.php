@@ -24,6 +24,8 @@ class User extends Authenticatable
         'nohp',
         'alamat',
         'jeniskelamin',
+        'qr_code',
+
     ];
 
     protected $hidden = [
@@ -35,6 +37,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed', // Laravel 10+ hashed casting
     ];
+
 
     /**
      * Relasi dengan Group (kelompok) - Setiap User hanya memiliki satu Group

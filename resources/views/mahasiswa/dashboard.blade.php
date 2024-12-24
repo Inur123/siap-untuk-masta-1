@@ -118,12 +118,15 @@
     <div class="card mb-3">
         <div class="row g-0">
             <div class="col-md-4 d-flex justify-content-center align-items-center"  style="padding-left: 20px;">
-                <img src="{{ asset('template/assets/images/qrcode.png') }}" class="img-fluid rounded-start" alt="QR Code">
+                <img src="{{ asset('storage/' . $user->qr_code) }}" class="img-fluid rounded-start" alt="QR Code">
             </div>
           <div class="col-md-8">
             <div class="card-body">
             <ul class="list-group">
                 <li class="list-group-item"><strong>Name:</strong> {{ $user->name }}</li>
+                <li class="list-group-item"><strong>No Hp:</strong> {{ $user->nohp }}</li>
+                <li class="list-group-item"><strong>Alamat:</strong> {{ $user->alamat }}</li>
+                <li class="list-group-item"><strong>Jenis Kelamin:</strong> {{ $user->jeniskelamin }}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ $user->email }}</li>
                 <li class="list-group-item"><strong>NIM:</strong> {{ $user->nim }}</li>
                 <li class="list-group-item"><strong>Fakultas:</strong> {{ $user->fakultas }}</li>
@@ -138,18 +141,19 @@
 
                         @if(in_array($extension, ['jpg', 'jpeg', 'png']))
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $user->file) }}" alt="Current file" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
-                                <p>File name: {{ basename($user->file) }}</p>
+                                <a href="{{ asset('storage/' . $user->file) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $user->file) }}" alt="Current file" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                                </a>
                             </div>
                         @elseif($extension === 'pdf')
                             <div class="mb-2">
-                                <embed src="{{ asset('storage/' . $user->file) }}" type="application/pdf" width="200" height="200" class="border rounded">
-                                <p>File name: {{ basename($user->file) }}</p>
+                                <a href="{{ asset('storage/' . $user->file) }}" target="_blank">
+                                    <embed src="{{ asset('storage/' . $user->file) }}" type="application/pdf" width="200" height="200" class="border rounded">
+                                </a>
                             </div>
                         @else
                             <p>Current file type: {{ $extension }}</p>
                             <p class="text-muted">Preview not available for this file type.</p>
-                            <p>File name: {{ basename($user->file) }}</p>
                         @endif
                     @else
                         <p>No file uploaded.</p>
@@ -165,7 +169,7 @@
     <!-- Edit Data Button -->
     <div class="mt-4">
         <a href="{{ route('mahasiswa.edit', $user->id) }}" class="btn btn-warning">Edit Data</a>
-        <a href="{{ route('mahasiswa.edit', $user->id) }}" class="btn btn-success">Download QRCode</a>
+        <a href="{{ $qrCodeUrl }}"  download="{{ $user->qr_code }}" class="btn btn-success">Download QRCode</a>
     </div>
 </div>
 @endsection

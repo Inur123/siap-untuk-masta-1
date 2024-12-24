@@ -13,6 +13,18 @@
     <script defer src="{{ asset('template/assets/plugins/fontawesome/js/all.min.js') }}"></script>
     <!-- App CSS -->
     <link id="theme-style" rel="stylesheet" href="{{ asset('template/assets/css/portal.css') }}">
+    <style>
+        /* Menghilangkan tombol up/down pada input number */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type="number"] {
+          -moz-appearance: textfield; /* Untuk Firefox */
+        }
+      </style>
 </head>
 <body class="app app-signup p-0">
     <div class="row g-0 app-auth-wrapper">
@@ -36,7 +48,8 @@
                                     <label for="name">Nama Lengkap</label>
                                     <input id="name" type="text"
                                         class="form-control @error('name') is-invalid @enderror"
-                                        name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                        name="name" value="{{ old('name') }}" required autocomplete="name" autofocus  placeholder="Nama Lengkap" >
+
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -49,7 +62,7 @@
                                     <label for="email">Email</label>
                                     <input id="email" type="email"
                                         class="form-control @error('email') is-invalid @enderror"
-                                        name="email" value="{{ old('email') }}" required autocomplete="email">
+                                        name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Email">
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -59,10 +72,11 @@
 
                                 <!-- Nomer HP Input -->
                                 <div class="mb-2">
-                                    <label for="nohp">Nomer HP</label>
-                                    <input id="nohp" type="text"
-                                        class="form-control @error('nohp') is-invalid @enderror"
-                                        name="nohp" value="{{ old('nohp') }}" required autocomplete="nohp">
+                                    <label for="nohp">Nomor HP</label>
+                                    <input id="nohp" type="number"
+                                           class="form-control @error('nohp') is-invalid @enderror"
+                                           name="nohp" value="{{ old('nohp') }}" required autocomplete="nohp"
+                                           placeholder="Masukkan No Hp" oninput="formatPhoneNumber(this)">
                                     @error('nohp')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -75,7 +89,7 @@
                                     <label for="alamat">Alamat</label>
                                     <input id="alamat" type="text"
                                         class="form-control @error('alamat') is-invalid @enderror"
-                                        name="alamat" value="{{ old('alamat') }}" required autocomplete="alamat">
+                                        name="alamat" value="{{ old('alamat') }}" required autocomplete="alamat" placeholder="Alamat">
                                     @error('alamat')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -112,7 +126,7 @@
                                     <label for="nim">NIM</label>
                                     <input id="nim" type="number"
                                         class="form-control @error('nim') is-invalid @enderror"
-                                        name="nim" value="{{ old('nim') }}" required autocomplete="nim">
+                                        name="nim" value="{{ old('nim') }}" placeholder="Masukkan NIM" required autocomplete="nim">
                                     @error('nim')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -159,8 +173,11 @@
                                 <div class="mb-2">
                                     <label for="file">Surat Kesehatan</label>
                                     <input id="file" type="file"
-                                        class="form-control @error('file') is-invalid @enderror"
-                                        name="file" required>
+                                           class="form-control @error('file') is-invalid @enderror"
+                                           name="file"
+                                           required
+                                           accept=".pdf">  <!-- Hanya menerima file PDF -->
+
                                     @error('file')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -173,7 +190,7 @@
                                     <label for="password">Password</label>
                                     <input id="password" type="password"
                                         class="form-control @error('password') is-invalid @enderror"
-                                        name="password" required autocomplete="new-password">
+                                        name="password" placeholder="Password" required autocomplete="new-password">
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -185,7 +202,7 @@
                                 <div class="mb-2">
                                     <label for="password-confirm">Confirm Password</label>
                                     <input id="password-confirm" type="password"
-                                        class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                        class="form-control" placeholder="Confirm Password" name="password_confirmation" required autocomplete="new-password">
                                 </div>
                                 <div class="g-recaptcha mb-3" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
                                 @error('g-recaptcha-response')

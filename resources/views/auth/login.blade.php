@@ -17,7 +17,18 @@
 
     <!-- App CSS -->
     <link id="theme-style" rel="stylesheet" href="{{ asset('template/assets/css/portal.css') }}">
+    <style>
+        /* Menghilangkan tombol up/down pada input number */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
 
+        input[type="number"] {
+          -moz-appearance: textfield; /* Untuk Firefox */
+        }
+      </style>
 </head>
 
 <body class="app app-login p-0">

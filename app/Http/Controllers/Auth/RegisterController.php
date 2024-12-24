@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
@@ -31,9 +33,14 @@ class RegisterController extends Controller
             'nim' => ['required', 'string', 'unique:users,nim'],
             'fakultas' => ['required', 'string', 'max:255'],
             'prodi' => ['required', 'string', 'max:255'],
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf'],
+            'file' => 'required|file|mimes:pdf|max:10240',
             'kelompok' => ['nullable', 'string', 'max:255'],
-            'nohp' => ['required', 'string', 'max:15', 'regex:/^\+62[0-9]{9,14}$/'],
+           'nohp' => [
+            'required',
+            'string',
+            'max:15',
+            'regex:/^(08\d{8,11})$/', // Pastikan hanya nomor dimulai dengan 08
+        ],
         'alamat' => ['nullable', 'string'],
         'jeniskelamin' => ['nullable', 'in:Laki-Laki,Perempuan'],
         'password_confirmation' => ['required', 'string', 'min:8'],
@@ -43,27 +50,57 @@ class RegisterController extends Controller
         ]);
     }
 
-    protected function create(array $data)
-    {
-        // Store the uploaded file and get the file path
-        $filePath = $data['file']->store('uploads', 'public');
+    public function create(array $data)
+{
+    $nohp = $this->formatPhoneNumber($data['nohp']);
+    // Simpan file yang diunggah dan dapatkan path file
+    $filePath = $data['file']->store('uploads', 'public');
 
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'nim' => $data['nim'],
-            'fakultas' => $data['fakultas'],
-            'prodi' => $data['prodi'],
-            'file' => $filePath,
-            'kelompok' => null, // Set to null; we will assign it later
-            'role' => 'mahasiswa',
-            'nohp' => $data['nohp'],
-            'alamat' => $data['alamat'],
-            'jeniskelamin' => $data['jeniskelamin'],
+    // Generate QR code data, ini menggunakan NIM sebagai data untuk QR code
+    $qrCodeData = $data['nim']; // Gunakan NIM atau data lain yang sesuai
 
-        ]);
+    // Tentukan nama file QR code berdasarkan NIM
+    $qrCodeFileName = 'qrcodes/' . $data['nim'] . '.png'; // Gunakan NIM sebagai nama file
+
+    // Generate QR code as PNG
+    $qrCode = QrCode::format('png') // Set format PNG
+        ->size(300)  // Set ukuran QR Code
+        ->generate($qrCodeData);  // Generate QR code
+
+    // Simpan QR code ke storage publik
+    Storage::disk('public')->put($qrCodeFileName, $qrCode);
+
+    // Buat user baru dengan data yang diterima
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+        'nim' => $data['nim'],
+        'fakultas' => $data['fakultas'],
+        'prodi' => $data['prodi'],
+        'file' => $filePath,
+        'kelompok' => null, // Set ke null, kelompok akan diatur nanti
+        'role' => 'mahasiswa',
+        'nohp' => $data['nohp'],
+        'alamat' => $data['alamat'],
+        'jeniskelamin' => $data['jeniskelamin'],
+        'qr_code' => $qrCodeFileName, // Simpan QR Code path di database
+    ]);
+
+    return $user;
+}
+
+protected function formatPhoneNumber($nohp)
+{
+    // Cek apakah nomor telepon dimulai dengan '08'
+    if (substr($nohp, 0, 2) === '08') {
+        // Ganti awalan '08' dengan '+62'
+        $nohp = '+62' . substr($nohp, 2);
     }
+    return $nohp;
+}
+
+
 
     public function register(Request $request)
     {

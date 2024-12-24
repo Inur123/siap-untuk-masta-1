@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('nohp')->nullable(); // Nomor HP (opsional) dengan panjang maksimum 15 karakter
             $table->text('alamat')->nullable(); // Alamat (opsional), gunakan tipe `text` untuk data lebih panjang
             $table->enum('jeniskelamin', ['Laki-Laki', 'Perempuan'])->nullable();
-            $table->string('qrcode')->nullable();
+            $table->string('qr_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

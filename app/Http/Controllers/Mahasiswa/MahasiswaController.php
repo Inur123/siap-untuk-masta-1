@@ -31,8 +31,10 @@ class MahasiswaController extends Controller
             ->where('is_active', true)  // Filter by active status
             ->latest()
             ->get();
-        return view('mahasiswa.dashboard', compact('user', 'operator','announcements')); // Pass both user and operator data to the view
+        $qrCodeUrl = asset('storage/' . $user->qr_code);
+        return view('mahasiswa.dashboard', compact('user', 'operator','announcements','qrCodeUrl')); // Pass both user and operator data to the view
     }
+
 
     // Show the form for editing the authenticated user's data
     public function edit()
