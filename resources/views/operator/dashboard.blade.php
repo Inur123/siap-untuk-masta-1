@@ -58,9 +58,12 @@
     @else
         <p class="mb-0">Total Mahasiswa: {{ $students->count() }}</p> <!-- Display total number of students -->
         <p  class="mb-0">Total Laki Laki:  {{ $students->where('jeniskelamin', 'Laki-Laki')->count() }}</p>
-        <p>Total Perempuan:  {{ $students->where('jeniskelamin', 'Perempuan')->count() }}</p> <!-- Display total number of students -->
+        <p class="mb-0">Total Perempuan:  {{ $students->where('jeniskelamin', 'Perempuan')->count() }}</p> <!-- Display total number of students -->
         <!-- Display total number of students -->
-
+        <div class="mb-1">
+            <a href="{{ route('operator.exportExcel') }}" class="btn btn-success">Export Excel</a>
+            <a href="{{ route('operator.exportWord') }}" class="btn btn-info">Export Word</a>
+        </div>
         <div style="overflow-x: auto; white-space: nowrap; border: 1px solid #ddd; border-radius: 5px;">
             <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
                 <thead>

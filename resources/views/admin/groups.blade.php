@@ -7,6 +7,9 @@
 @section('content')
     <div class="container">
         <h1 class="text-2xl font-bold mb-4">Data Kelompok Mahasiswa</h1>
+        <a href="{{ route('admin.exportUsers') }}" class="btn btn-success mb-2">Export Users to Excel</a>
+        <a href="{{ route('admin.exportUsersToWord') }}" class="btn btn-info mb-2">Export Users to Word</a>
+
         @php
         // Sort the $groupDetails array by the 'kelompok' field
         usort($groupDetails, function($a, $b) {

@@ -49,11 +49,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/announcement/{id}/update', [AdminController::class, 'updateAnnouncement'])->name('admin.update_announcement');
     //gruop
     Route::get('/admin/group/{kelompok}', [AdminController::class, 'showGroupDetail'])->name('admin.groupDetail');
+    Route::get('/admin/export-users', [AdminController::class, 'exportUsersToExcel'])->name('admin.exportUsers');
+    Route::get('/admin/group/{kelompok}/export', [AdminController::class, 'exportGroupMembersToExcel'])->name('admin.exportGroupMembers');
+
+    Route::get('/admin/export-group-{kelompok}-to-word', [AdminController::class, 'exportGroupMembersToWord'])->name('admin.exportGroupMembersToWord');
+Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersToWord'])->name('admin.exportUsersToWord');
 });
 
 // Operator routes
 Route::middleware('auth')->group(function () {
     Route::get('/operator/dashboard', [OperatorController::class, 'dashboard'])->name('operator.dashboard');
+    Route::get('operator/export-excel', [OperatorController::class, 'exportExcel'])->name('operator.exportExcel');
+    Route::get('operator/export-word', [OperatorController::class, 'exportWord'])->name('operator.exportWord');
     Route::get('/dashboard', [AdminController::class, 'getAnnouncementsByRole'])->name('dashboard');
 });
 

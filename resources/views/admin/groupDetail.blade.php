@@ -18,11 +18,14 @@
         <p><strong>Total Anggota:</strong> {{ count($groupMembers) }}</p>
         <p><strong>Laki-laki:</strong> {{ $groupMembers->where('jeniskelamin', 'Laki-Laki')->count() }}</p>
         <p><strong>Perempuan:</strong> {{ $groupMembers->where('jeniskelamin', 'Perempuan')->count() }}</p>
+        <a href="{{ route('admin.exportGroupMembers', ['kelompok' => $kelompok]) }}" class="btn btn-success mb-2">Export Excel</a>
+        <a href="{{ route('admin.exportGroupMembersToWord', ['kelompok' => $kelompok]) }}" class="btn btn-info mb-2">Export Word</a>
         <div style="overflow-x: auto; white-space: nowrap; border: 1px solid #ddd; border-radius: 5px;">
             <table class="table-auto w-full mt-2 table table-bordered" style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background-color: #f8f9fa;">
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">No</th>
+                        <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">QR Code</th>
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">Email</th>
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">Name</th>
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">NIM</th>
@@ -39,6 +42,8 @@
                     @foreach ($groupMembers as $index => $member)
                     <tr>
                         <td style="padding: 8px; text-align: center;">{{ $index + 1 }}</td>
+                        <td style="padding: 8px; text-align: center;">
+                            <img src="{{ asset('storage/' . $member->qr_code) }}" class="img-fluid rounded-start" alt="QR Code" style="max-width: 100px; max-height: 100px;">
                         <td style="padding: 8px; text-align: center;">{{ $member->email }}</td>
                         <td style="padding: 8px; text-align: center;">{{ $member->name }}</td>
                         <td style="padding: 8px; text-align: center;">{{ $member->nim }}</td>

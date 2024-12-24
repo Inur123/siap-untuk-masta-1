@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
-
+use App\Exports\UsersExport;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Style\Font;
+use Illuminate\Support\Facades\DB;
+
+use App\Exports\GroupMembersExport;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpWord\Style\Paragraph;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -512,8 +520,101 @@ public function showGroupDetail($kelompok)
     $pemanduPhone = $operator ? $operator->nohp : 'N/A';
 
     // Kirim data kelompok, anggota, dan pemandu ke view
-    return view('admin.groupDetail', compact('groupMembers', 'groupDetail', 'pemanduName', 'pemanduPhone'));
+    return view('admin.groupDetail', compact('groupMembers', 'groupDetail', 'pemanduName', 'pemanduPhone', 'kelompok'));
 }
+
+// Export functionality for the specific group
+public function exportGroupMembersToExcel($kelompok)
+{
+    return Excel::download(new GroupMembersExport($kelompok), 'group_'.$kelompok.'_members.xlsx');
+}
+
+public function exportUsersToExcel()
+{
+    return Excel::download(new UsersExport, 'users.xlsx');
+}
+public function exportGroupMembersToWord($kelompok)
+{
+    // Buat objek PhpWord
+    $phpWord = new PhpWord();
+
+    // Tambahkan bagian atau halaman baru
+    $section = $phpWord->addSection();
+
+    // Set title
+    $section->addText("Group $kelompok Members", array('name' => 'Arial', 'size' => 14, 'bold' => true));
+
+    // Ambil data anggota kelompok dengan role 'mahasiswa'
+    $members = DB::table('users')
+        ->where('kelompok', $kelompok)
+        ->where('role', 'mahasiswa') // Menambahkan filter berdasarkan role
+        ->get();
+
+    // Tambahkan data anggota kelompok ke dalam tabel
+    $table = $section->addTable();
+    $table->addRow();
+    $table->addCell(2000)->addText('Name');
+    $table->addCell(2000)->addText('NIM');
+    $table->addCell(2000)->addText('Email');
+
+    foreach ($members as $member) {
+        $table->addRow();
+        $table->addCell(2000)->addText($member->name);
+        $table->addCell(2000)->addText($member->nim);
+        $table->addCell(2000)->addText($member->email);
+    }
+
+    // Output ke file Word
+    $fileName = 'group_' . $kelompok . '_members.docx';
+    $filePath = storage_path('app/public/' . $fileName);
+
+    $phpWord->save($filePath);
+
+    return response()->download($filePath);
+}
+
+
+// Export to Word for all users
+public function exportUsersToWord()
+{
+    // Buat objek PhpWord
+    $phpWord = new PhpWord();
+
+    // Tambahkan bagian atau halaman baru
+    $section = $phpWord->addSection();
+
+    // Set title
+    $section->addText("All Mahasiswa Users", array('name' => 'Arial', 'size' => 14, 'bold' => true));
+
+    // Ambil data pengguna dengan role 'mahasiswa'
+    $users = DB::table('users')
+        ->where('role', 'mahasiswa') // Menambahkan filter berdasarkan role
+        ->get();
+
+    // Tambahkan data pengguna ke dalam tabel
+    $table = $section->addTable();
+    $table->addRow();
+    $table->addCell(2000)->addText('Name');
+    $table->addCell(2000)->addText('NIM');
+    $table->addCell(2000)->addText('Email');
+
+    foreach ($users as $user) {
+        $table->addRow();
+        $table->addCell(2000)->addText($user->name);
+        $table->addCell(2000)->addText($user->nim);
+        $table->addCell(2000)->addText($user->email);
+    }
+
+    // Output ke file Word
+    $fileName = 'mahasiswa_users.docx';
+    $filePath = storage_path('app/public/' . $fileName);
+
+    $phpWord->save($filePath);
+
+    return response()->download($filePath);
+}
+
+
 
 
 
