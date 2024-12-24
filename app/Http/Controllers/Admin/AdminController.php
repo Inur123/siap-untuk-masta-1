@@ -243,7 +243,7 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect()->route('admin.users')->with('success', 'User updated successfully!');
+        return redirect()->route('admin.mahasiswa')->with('success', 'User updated successfully!');
     }
 
     /**

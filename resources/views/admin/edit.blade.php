@@ -70,7 +70,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">Update User</button>
-                <a href="{{ route('admin.users') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ route('admin.mahasiswa') }}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

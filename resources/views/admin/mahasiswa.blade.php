@@ -18,6 +18,7 @@
             <thead>
                 <tr style="background-color: #f8f9fa;">
                     <th style="padding: 8px; text-align: center;">No</th>
+                    <th style="padding: 8px; text-align: center;">QR Code</th>
                     <th style="padding: 8px; text-align: center;">Email</th>
                     <th style="padding: 8px; text-align: center;">Name</th>
                     <th style="padding: 8px; text-align: center;">NIM</th>
@@ -35,6 +36,8 @@
                 @foreach ($mahasiswa as $index => $user)
                 <tr>
                     <td style="padding: 8px; text-align: center;">{{ $mahasiswa->firstItem() + $index }}</td>
+                    <td style="padding: 8px; text-align: center;">
+                        <img src="{{ asset('storage/' . $user->qr_code) }}" class="img-fluid rounded-start" alt="QR Code" style="max-width: 100px; max-height: 100px;">
                     <td style="padding: 8px; text-align: center;">{{ $user->email }}</td>
                     <td style="padding: 8px; text-align: center;">{{ $user->name }}</td>
                     <td style="padding: 8px; text-align: center;">{{ $user->nim }}</td>
