@@ -41,7 +41,7 @@ class AdminController extends Controller
         ->count('kelompok'); // Count the number of unique kelompok values
         // Calculate the total number of members in each faculty (fakultas)
         $totalMembersPerFakultas = User::where('role', 'mahasiswa')
-            ->select('fakultas', \DB::raw('count(*) as total'))
+            ->select('fakultas', DB::raw('count(*) as total'))
             ->groupBy('fakultas')
             ->get()
             ->keyBy('fakultas');
@@ -49,7 +49,7 @@ class AdminController extends Controller
         // Retrieve the latest group data from the database
         $groupData = User::where('role', 'mahasiswa')
             ->whereNotNull('kelompok')
-            ->select('fakultas', 'kelompok', \DB::raw('count(*) as total'))
+            ->select('fakultas', 'kelompok', DB::raw('count(*) as total'))
             ->groupBy('fakultas', 'kelompok')
             ->get()
             ->groupBy('fakultas')
@@ -64,8 +64,8 @@ class AdminController extends Controller
 
         // Retrieve user registration data for the week (Monday to Sunday)
         $registrations = User::select(
-                \DB::raw('DATE(created_at) as date'),
-                \DB::raw('count(*) as count')
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('count(*) as count')
             )
             ->where('created_at', '>=', now()->startOfWeek()) // Start of the week (Monday)
             ->where('created_at', '<=', now()->endOfWeek()) // End of the week (Sunday)
@@ -111,7 +111,7 @@ class AdminController extends Controller
         // Find the highest existing group index to continue numbering correctly
         $lastGroupIndex = User::where('role', 'mahasiswa')
             ->whereNotNull('kelompok')
-            ->max(\DB::raw('CAST(kelompok AS UNSIGNED)')) ?? 0;
+            ->max(DB::raw('CAST(kelompok AS UNSIGNED)')) ?? 0;
 
         // Start assigning groups from the next available index
         $globalGroupIndex = $lastGroupIndex + 1;

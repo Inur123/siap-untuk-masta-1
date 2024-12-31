@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;// Pastikan model User sudah ada
 
@@ -39,8 +40,11 @@ class MahasiswaController extends Controller
     // Show the form for editing the authenticated user's data
     public function edit()
     {
-        $user = Auth::user(); // Get the authenticated user
-        return view('mahasiswa.edit', compact('user')); // Pass the user data to the view
+        $user = Auth::user();
+
+        $encryptedUserId = Crypt::encryptString($user->id);
+        // Get the authenticated user
+        return view('mahasiswa.edit', compact('user','encryptedUserId')); // Pass the user data to the view
     }
 
     public function update(Request $request)

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -126,7 +127,7 @@ protected function formatPhoneNumber($nohp)
         // Find the highest existing group index to continue numbering correctly
         $lastGroupIndex = User::where('role', 'mahasiswa')
             ->whereNotNull('kelompok')
-            ->max(\DB::raw('CAST(kelompok AS UNSIGNED)')) ?? 0;
+            ->max(DB::raw('CAST(kelompok AS UNSIGNED)')) ?? 0;
 
         // Start assigning groups from the next available index
         $globalGroupIndex = $lastGroupIndex + 1;

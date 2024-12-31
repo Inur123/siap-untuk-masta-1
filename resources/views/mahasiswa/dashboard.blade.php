@@ -168,7 +168,7 @@
 
     <!-- Edit Data Button -->
     <div class="mt-4">
-        <a href="{{ route('mahasiswa.edit', $user->id) }}" class="btn btn-warning">Edit Data</a>
+        <a href="{{ route('mahasiswa.edit', ['encryptedId' => Crypt::encryptString($user->id)]) }}" class="btn btn-warning">Edit Data</a>
         <a href="{{ $qrCodeUrl }}"  download="{{ $user->qr_code }}" class="btn btn-success">Download QRCode</a>
     </div>
 </div>

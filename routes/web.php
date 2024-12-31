@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
 // Mahasiswa routes
 Route::middleware('auth')->group(function () {
     Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswa.dashboard');
-    Route::get('mahasiswa/edit', [MahasiswaController::class, 'edit'])->name('mahasiswa.edit');
+    Route::get('mahasiswa/edit/{encryptedId}', [MahasiswaController::class, 'edit'])->name('mahasiswa.edit');
     Route::put('mahasiswa/update', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
     Route::get('/dashboard', [AdminController::class, 'getAnnouncementsByRole'])->name('dashboard');
 });
