@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Events\UserRegistered;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -85,6 +86,8 @@ class RegisterController extends Controller
         'jeniskelamin' => $data['jeniskelamin'],
         'qr_code' => $qrCodeFileName, // Simpan QR Code path di database
     ]);
+
+    event(new UserRegistered($user));
 
     return $user;
 }
