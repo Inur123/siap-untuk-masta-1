@@ -18,6 +18,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('kegiatan', KegiatanController::class);
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'showAllUsers'])->name('admin.users');
     Route::get('/admin/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.edit'); // Edit user route
@@ -37,12 +38,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('admin/operator/{id}', [AdminController::class, 'destroyOperator'])->name('admin.operator.destroy');
     Route::get('admin/operators', [AdminController::class, 'showOperators'])->name('admin.operators');
     Route::get('admin/mahasiswa', [AdminController::class, 'showMahasiswa'])->name('admin.mahasiswa');
-
-    //kelompok
     Route::get('/admin/groups', [AdminController::class, 'showGroups'])->name('admin.groups');
-    // Announcement Routes
-// Route to view all announcements
-// Route to create a new announcement
     Route::get('/admin/create-announcement', [AdminController::class, 'createAnnouncement'])->name('admin.create_announcement');
     Route::post('/admin/store-announcement', [AdminController::class, 'storeAnnouncement'])->name('admin.store_announcement'); // Route to store the new announcement
     Route::put('/admin/announcement/{id}/toggle', [AdminController::class, 'toggleAnnouncementStatus'])->name('admin.toggle_announcement_status'); // Route to toggle status of announcement
@@ -56,6 +52,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/export-group-{kelompok}-to-word', [AdminController::class, 'exportGroupMembersToWord'])->name('admin.exportGroupMembersToWord');
 Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersToWord'])->name('admin.exportUsersToWord');
+
 });
 
 // Operator routes
@@ -64,6 +61,11 @@ Route::middleware(['auth', 'role:operator'])->group(function () {
     Route::get('operator/export-excel', [OperatorController::class, 'exportExcel'])->name('operator.exportExcel');
     Route::get('operator/export-word', [OperatorController::class, 'exportWord'])->name('operator.exportWord');
     Route::get('/operator/absensi', [OperatorController::class, 'index'])->name('operator.absensi');
+    Route::get('operator/absensi', [OperatorController::class, 'absensi'])->name('operator.absensi');
+    Route::get('/operator/absensi/{kegiatanId}/detail', [OperatorController::class, 'detailAbsensi'])->name('operator.absensi.detail');
+
+
+
 });
 
 // Mahasiswa routes
@@ -134,7 +136,7 @@ Route::middleware(['auth', 'role:admin,operator'])->group(function () {
 
     Route::get('/absensi/groups/{kegiatanId}/{kelompokId}', [AbsensiController::class, 'groups'])->name('absensi.groups');
     Route::get('/absensi/detail/{kegiatanId}', [AbsensiController::class, 'showDetail'])->name('absensi.detail');
-    Route::get('/absensi/group/{kegiatanId}/{kelompokId}', [AbsensiController::class, 'showGroupDetail'])->name('absensi.group.detail');
+
     Route::get('kegiatan/{kegiatanId}/groups', [AbsensiController::class, 'showGroups'])->name('absensi.groups');
 
     Route::post('absensi/{kegiatanId}/update', [AbsensiController::class, 'updateStatus'])->name('absensi.updateStatus');
@@ -143,6 +145,10 @@ Route::middleware(['auth', 'role:admin,operator'])->group(function () {
     Route::post('/absensi/{kegiatan_id}/{user_id}/update', [AbsensiController::class, 'updateAbsensi']);
 
     Route::post('/absensi/{kegiatanId}/{userId}/update', [AbsensiController::class, 'update']);
+    Route::get('/absensi/{id}/card', [AbsensiController::class, 'showCard'])->name('absensi.card');
+    Route::get('/card', [AbsensiController::class, 'card'])->name('absensi.card');
+    Route::get('absensi/{kegiatanId}/group/{kelompokId}', [AbsensiController::class, 'showGroupDetail'])->name('absensi.group.detail');
+
 });
 
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {

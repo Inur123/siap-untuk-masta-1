@@ -101,24 +101,47 @@ class OperatorController extends Controller
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
 
-    public function index()
-{
-    // Cek jika user bukan operator, redirect ke halaman lain
-    if (auth()->user()->role !== 'operator') {
-        abort(403, 'Unauthorized action.');
+    public function absensi()
+    {
+        // Get the authenticated operator
+        $operator = auth()->user();
+
+        // Retrieve attendance data for students in the operator's group
+        $absensiData = Absensi::whereHas('user', function ($query) use ($operator) {
+            $query->where('kelompok', $operator->kelompok)
+                  ->where('role', 'mahasiswa');
+        })
+        ->with(['user', 'kegiatan']) // Load related models
+        ->latest()
+        ->paginate(10);
+
+        // Retrieve all activities related to the operator's group
+        $kegiatans = Kegiatan::whereHas('absensi.user', function ($query) use ($operator) {
+            $query->where('kelompok', $operator->kelompok);
+        })->with(['absensi'])->get();
+
+        // Return the view with the data
+        return view('operator.absensi', compact('absensiData', 'operator', 'kegiatans'));
     }
 
-    // Ambil data kegiatan dan absensi
-    $kegiatans = Kegiatan::with('absensi.user')->get();
+    public function detailAbsensi($kegiatanId)
+    {
+        // Get the authenticated operator
+        $operator = auth()->user();
 
-    // Ambil data mahasiswa berdasarkan kelompok operator yang sedang login
-    $users = User::where('role', 'mahasiswa')
-                 ->where('kelompok', auth()->user()->kelompok) // Filter berdasarkan kelompok operator yang login
-                 ->get();
+        // Retrieve the activity (kegiatan) and its related attendance (absensi) for the operator's group
+        $kegiatan = Kegiatan::with(['absensi' => function($query) use ($operator) {
+            $query->whereHas('user', function($subQuery) use ($operator) {
+                $subQuery->where('kelompok', $operator->kelompok);  // Filter by operator's group
+            });
+        }])
+        ->where('id', $kegiatanId)
+        ->firstOrFail(); // If not found, return 404
 
-    // Tampilkan view dengan data
-    return view('absensi.index', compact('kegiatans', 'users'));
-}
+        // Return the view and pass the data
+        return view('operator.detail_absensi', compact('kegiatan', 'operator'));
+    }
+
 
 
 }

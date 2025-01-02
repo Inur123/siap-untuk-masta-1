@@ -9,9 +9,9 @@
     <h2>Detail Absensi Kelompok {{ $kelompokId }}</h2>
 
     <!-- Card Statistik -->
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-4 ">
         <div class="col-6 col-lg-3">
-            <div class="app-card app-card-stat shadow-sm h-100">
+            <div class="app-card app-card-stat shadow-sm h-100 ">
                 <div class="app-card-body p-3 p-lg-4">
                     <h4 class="stats-type mb-1">Total Anggota Kelompok</h4>
                     <div class="stats-figure">{{ $users->count() }}</div>

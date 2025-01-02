@@ -337,4 +337,11 @@ public function updateAbsensi(Request $request, $kegiatan_id, $user_id)
     return response()->json(['success' => false, 'message' => 'Absensi tidak ditemukan']);
 }
 
+
+public function card()
+{
+    $kegiatan = Kegiatan::all(); // Mengambil semua data kegiatan
+    return view('absensi.card', compact('kegiatan'));
+}
+
 }

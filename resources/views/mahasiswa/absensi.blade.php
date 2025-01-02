@@ -13,6 +13,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>No</th>
                     <th>Kegiatan</th>
                     <th>Status</th>
                     <th>Tanggal Absensi</th>
@@ -21,6 +22,7 @@
             <tbody>
                 @foreach($absensi as $item)
                     <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $item->kegiatan->nama_kegiatan }}</td>
                         <td>{{ $item->status }}</td>
                         <td>{{ $item->created_at->format('d-m-Y | H:i') }}</td>

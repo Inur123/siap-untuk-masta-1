@@ -36,18 +36,16 @@ class RegisterController extends Controller
             'prodi' => ['required', 'string', 'max:255'],
             'file' => 'required|file|mimes:pdf|max:10240',
             'kelompok' => ['nullable', 'string', 'max:255'],
-           'nohp' => [
-            'required',
-            'string',
-            'max:15',
-            'regex:/^(08\d{8,11})$/', // Pastikan hanya nomor dimulai dengan 08
-        ],
-        'alamat' => ['nullable', 'string'],
-        'jeniskelamin' => ['nullable', 'in:Laki-Laki,Perempuan'],
-        'password_confirmation' => ['required', 'string', 'min:8'],
-        'g-recaptcha-response' => ['required'],
-
-
+            'nohp' => [
+                'required',
+                'string',
+                'max:15',
+                'regex:/^(08\d{8,11})$/', // Pastikan hanya nomor dimulai dengan 08
+            ],
+            'alamat' => ['nullable', 'string'],
+            'jeniskelamin' => ['nullable', 'in:Laki-Laki,Perempuan'],
+            'password_confirmation' => ['required', 'string', 'min:8'],
+            'g-recaptcha-response' => ['required'],
         ]);
     }
 

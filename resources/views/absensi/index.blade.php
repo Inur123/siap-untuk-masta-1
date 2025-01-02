@@ -13,8 +13,8 @@
         @foreach($kegiatans as $kegiatan)
             <div class="col-md-4 mb-3">
                 <div class="card">
-                    <div class="card-header">
-                        <h3>{{ $kegiatan->nama_kegiatan }}</h3>
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">{{ $kegiatan->nama_kegiatan }}</h3>
                     </div>
                     <div class="card-body">
                         <h5>Absensi:</h5>
@@ -32,7 +32,7 @@
                         <p>{{ $kegiatan->absensi()->where('status', 'izin')->count() }} orang</p>
 
                         <!-- Button to view detailed attendance for this event -->
-                        <a href="{{ route('absensi.groups', ['kegiatanId' => $kegiatan->id]) }}" class="btn btn-primary">Detail Semua Kelompok Absensi</a>
+                        <a href="{{ route('absensi.groups', ['kegiatanId' => $kegiatan->id]) }}" class="btn btn-outline-primary btn-sm">Detail Semua Kelompok Absensi</a>
                     </div>
                 </div>
             </div>

@@ -11,8 +11,11 @@
         <a href="{{ route('admin.exportUsersToWord') }}" class="btn btn-info mb-2">Export Users to Word</a>
 
         @php
-        // Sort the $groupDetails array by the 'kelompok' field
-        usort($groupDetails, function($a, $b) {
+        // Convert the collection to an array before sorting
+        $groupDetailsArray = $groupDetails->toArray();
+
+        // Sort the array by the 'kelompok' field
+        usort($groupDetailsArray, function($a, $b) {
             return (int)$a['kelompok'] <=> (int)$b['kelompok'];
         });
         @endphp

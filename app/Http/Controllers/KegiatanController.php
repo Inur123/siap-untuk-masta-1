@@ -51,9 +51,49 @@ class KegiatanController extends Controller
                 'user_id' => $user->id,
                 'kegiatan_id' => $kegiatan->id,
                 'status' => 'tidak_hadir', // Set default status ke 'tidak_hadir'
+                'tanggal' => now()->toDateString(), // Menyimpan tanggal absensi sesuai dengan kegiatan
             ]);
         }
 
         return redirect()->route('kegiatan.index')->with('success', 'Kegiatan berhasil ditambahkan beserta absensi untuk mahasiswa.');
     }
+
+    public function edit($id)
+    {
+        // Ambil kegiatan berdasarkan ID
+        $kegiatan = Kegiatan::findOrFail($id);
+
+        // Tampilkan halaman edit dengan data kegiatan
+        return view('kegiatan.edit', compact('kegiatan'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'nama_kegiatan' => 'required|string|max:255',
+        ]);
+
+        // Cari kegiatan berdasarkan ID dan update data
+        $kegiatan = Kegiatan::findOrFail($id);
+        $kegiatan->update([
+            'nama_kegiatan' => $request->nama_kegiatan,
+            'tanggal' => $request->tanggal, // Update tanggal jika diperlukan
+        ]);
+
+        // Redirect ke halaman daftar kegiatan dengan pesan sukses
+        return redirect()->route('kegiatan.index')->with('success', 'Kegiatan berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        // Cari dan hapus kegiatan berdasarkan ID
+        $kegiatan = Kegiatan::findOrFail($id);
+        $kegiatan->delete();
+
+        // Redirect ke halaman daftar kegiatan dengan pesan sukses
+        return redirect()->route('kegiatan.index')->with('success', 'Kegiatan berhasil dihapus.');
+    }
+
+
 }

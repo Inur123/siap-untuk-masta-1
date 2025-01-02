@@ -472,28 +472,31 @@ public function showMahasiswa()
 
 public function showGroups()
 {
-    // Ambil semua kelompok yang ada berdasarkan kolom 'kelompok' di tabel 'users'
-    $groups = User::select('kelompok', 'fakultas')
+    // Ambil hanya 5 kelompok yang ada berdasarkan kolom 'kelompok' di tabel 'users'
+    $groups = User::select('kelompok', 'fakultas', 'nim', 'name', 'prodi')
                   ->where('role', 'mahasiswa')  // Filter hanya mahasiswa
                   ->distinct()  // Ambil hanya kelompok yang unik
+                  ->take(5)  // Hanya ambil 5 data kelompok
                   ->get();
 
-    // Loop untuk mendapatkan anggota berdasarkan kelompok
-    $groupDetails = [];
+    // Gunakan collection untuk mengelompokkan data berdasarkan 'kelompok'
+    $groupDetails = $groups->groupBy('kelompok');
 
-    foreach ($groups as $group) {
-        $groupDetails[] = [
-            'kelompok' => $group->kelompok,
-            'fakultas' => $group->fakultas,
-            'members' => User::where('kelompok', $group->kelompok)
-                              ->where('role', 'mahasiswa')  // Filter by role 'mahasiswa'
-                              ->get()
+    // Loop untuk mendapatkan anggota berdasarkan kelompok
+    foreach ($groupDetails as $kelompok => $group) {
+        // Tambahkan data anggota untuk setiap kelompok
+        $groupDetails[$kelompok] = [
+            'kelompok' => $kelompok,
+            'fakultas' => $group->first()->fakultas, // Ambil fakultas dari anggota pertama
+            'members' => $group // Anggota yang sudah dikelompokkan berdasarkan 'kelompok'
         ];
     }
 
     // Pass groupDetails ke view
-    return view('admin.groups', compact('groupDetails'));
+    return view('admin.groups', ['groupDetails' => $groupDetails]);
 }
+
+
 
 public function showGroupDetail($kelompok)
 {
@@ -520,7 +523,7 @@ public function showGroupDetail($kelompok)
     $pemanduPhone = $operator ? $operator->nohp : 'N/A';
 
     // Kirim data kelompok, anggota, dan pemandu ke view
-    return view('admin.groupDetail', compact('groupMembers', 'groupDetail', 'pemanduName', 'pemanduPhone', 'kelompok'));
+    return view('admin.groupDetail', compact('groupMembers', 'groupDetail', 'pemanduName', 'pemanduPhone'));
 }
 
 // Export functionality for the specific group

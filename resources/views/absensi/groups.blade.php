@@ -12,9 +12,9 @@
     <div class="row">
         @foreach($kelompoks as $kelompok)
             <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Kelompok {{ $kelompok->kelompok }}</h3>
+                <div class="card " >
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">Kelompok {{ $kelompok->kelompok }}</h3>
                     </div>
                     <div class="card-body">
                         <!-- Get all users in the group with the role 'mahasiswa' -->

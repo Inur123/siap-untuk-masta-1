@@ -36,9 +36,14 @@
                         <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d M Y') }}</td>
                         <td>
                             <!-- Link to QR code scan -->
-                            <a href="{{ route('absensi.scan', $kegiatan->id) }}">
-                                <button class="btn btn-info">Absen</button>
+                            <a href="{{ route('kegiatan.edit', $kegiatan->id) }}">
+                                <button class="btn btn-warning">Edit</button>
                             </a>
+                            <form action="{{ route('kegiatan.destroy', $kegiatan->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus kegiatan ini?')">Hapus</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
