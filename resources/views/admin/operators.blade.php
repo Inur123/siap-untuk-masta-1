@@ -33,18 +33,19 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($operators as $index=> $operator)
+                @foreach ($operators as $index => $operator)
                     <tr>
-                        <td>{{ $operators->firstItem() + $index }}</td>
+                        <td>{{ $index + 1 }}</td> <!-- Simply use the $index to show item number -->
                         <td>{{ $operator->name }}</td>
                         <td>{{ $operator->email }}</td>
                         <td>{{ $operator->kelompok }}</td>
                         <td>{{ $operator->fakultas }}</td>
                         <td>{{ $operator->prodi }}</td>
                         <td>
-                            <!-- Add action buttons for edit, delete, etc. -->
-                            <a href="{{ route('admin.edit_operator', $operator->id) }}" class="btn btn-outline-success"><i class="fas fa-edit"></i>Edit</a>
-                            <!-- Example of delete button or other actions -->
+                            <!-- Action buttons for edit, delete, etc. -->
+                            <a href="{{ route('admin.edit_operator', $operator->id) }}" class="btn btn-outline-success">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
                             <form action="{{ route('admin.operator.destroy', $operator->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
@@ -56,6 +57,8 @@
                     </tr>
                 @endforeach
             </tbody>
+
+
         </table>
         <script>
             $(document).ready(function () {

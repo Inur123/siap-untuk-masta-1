@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Operator\OperatorController;
@@ -57,11 +59,11 @@ Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersT
 });
 
 // Operator routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:operator'])->group(function () {
     Route::get('/operator/dashboard', [OperatorController::class, 'dashboard'])->name('operator.dashboard');
     Route::get('operator/export-excel', [OperatorController::class, 'exportExcel'])->name('operator.exportExcel');
     Route::get('operator/export-word', [OperatorController::class, 'exportWord'])->name('operator.exportWord');
-    Route::get('/dashboard', [AdminController::class, 'getAnnouncementsByRole'])->name('dashboard');
+    Route::get('/operator/absensi', [OperatorController::class, 'index'])->name('operator.absensi');
 });
 
 // Mahasiswa routes
@@ -72,3 +74,76 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'getAnnouncementsByRole'])->name('dashboard');
 });
 
+Route::middleware(['auth'])->group(function () {
+    // Route untuk absensi
+
+    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::get('/absensi/create/{kegiatan_id}', [AbsensiController::class, 'create'])->name('absensi.create');
+    Route::post('/absensi/store/{kegiatan_id}', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::get('/absensi/show/{id}', [AbsensiController::class, 'show'])->name('absensi.show');
+    Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
+    Route::post('/absensi/store/{kegiatan_id}', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::get('/absensi/select/{kegiatan_id}', [AbsensiController::class, 'selectUsers'])->name('absensi.select');
+
+
+    Route::get('/absensi/scan/{user_id}', [AbsensiController::class, 'scan'])
+    ->name('absensi.scan');
+    Route::post('/mark-attendance', [AbsensiController::class, 'markAttendance']);
+
+Route::post('/absensi/mark-attendance', [AbsensiController::class, 'markAttendance'])->name('absensi.markAttendance');
+
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
+    Route::get('/kegiatan/create', [KegiatanController::class, 'create'])->name('kegiatan.create'); // Halaman tambah kegiatan
+    Route::post('/kegiatan/store', [KegiatanController::class, 'store'])->name('kegiatan.store');
+
+    Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
+
+// Route untuk halaman scan berdasarkan kegiatan
+Route::get('/scan/{kegiatan}', [AbsensiController::class, 'scan'])->name('absensi.scan');
+Route::post('/absensi/store/{qr_code}', [AbsensiController::class, 'store'])->name('absensi.store');
+
+
+
+Route::get('/scan/{kegiatan}', [AbsensiController::class, 'scan'])->name('scan');
+
+Route::post('/absensi/validasi', [AbsensiController::class, 'validasiQr'])->name('absensi.validasi');
+Route::post('/absensi/proses', [AbsensiController::class, 'proses'])->name('absensi.proses');
+Route::get('absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
+Route::post('absensi/validasi', [AbsensiController::class, 'validasiQr'])->name('absensi.validasi');
+Route::post('absensi/proses', [AbsensiController::class, 'prosesAbsensi'])->name('absensi.proses');
+});
+
+// Remove the second occurrence of the route definition for '/absensi/validasi-qr'
+Route::middleware(['auth', 'role:admin,operator'])->group(function () {
+    Route::resource('absensi', AbsensiController::class)->only(['index', 'create', 'store', 'destroy']);
+
+    // Change 'show' route to 'groups'
+    Route::get('/absensi/{kegiatan_id}/kelompok/{kelompok_id}', [AbsensiController::class, 'groups'])->name('absensi.groups');
+
+    Route::get('/absensi/select/{kegiatan_id}', [AbsensiController::class, 'selectUsers'])->name('absensi.select');
+    Route::post('/validasi-qr', [AbsensiController::class, 'validasiQr'])->name('validasi-qr');
+
+    Route::get('/absensi/scan/{kegiatan_id}', [AbsensiController::class, 'scan'])->name('absensi.scan');
+    Route::post('/absensi/mark-attendance', [AbsensiController::class, 'markAttendance'])->name('absensi.markAttendance');
+    Route::post('/proses-absensi', [AbsensiController::class, 'prosesAbsensi'])->name('proses-absensi');
+    Route::get('/absensi/{kegiatan_id}/kelompok/{kelompok_id}/details', [AbsensiController::class, 'groups'])->name('absensi.groups');
+    Route::get('/absensi/{kegiatan_id}/kelompok/{kelompok_id}/details', [AbsensiController::class, 'groupDetail'])->name('absensi.groups.detail');
+
+    Route::get('/absensi/groups/{kegiatanId}/{kelompokId}', [AbsensiController::class, 'groups'])->name('absensi.groups');
+    Route::get('/absensi/detail/{kegiatanId}', [AbsensiController::class, 'showDetail'])->name('absensi.detail');
+    Route::get('/absensi/group/{kegiatanId}/{kelompokId}', [AbsensiController::class, 'showGroupDetail'])->name('absensi.group.detail');
+    Route::get('kegiatan/{kegiatanId}/groups', [AbsensiController::class, 'showGroups'])->name('absensi.groups');
+
+    Route::post('absensi/{kegiatanId}/update', [AbsensiController::class, 'updateStatus'])->name('absensi.updateStatus');
+    Route::post('/absensi/{kegiatanId}/{userId}/update', [AbsensiController::class, 'updateStatus'])->name('absensi.updateStatus');
+    Route::post('/absensi/{kegiatanId}/{userId}/update', [AbsensiController::class, 'update'])->name('absensi.update');
+    Route::post('/absensi/{kegiatan_id}/{user_id}/update', [AbsensiController::class, 'updateAbsensi']);
+
+    Route::post('/absensi/{kegiatanId}/{userId}/update', [AbsensiController::class, 'update']);
+
+
+
+});

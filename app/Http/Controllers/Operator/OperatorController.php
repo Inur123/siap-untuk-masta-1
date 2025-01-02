@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Operator;
 
-use App\Models\Announcement;
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\StudentsExport; // Import the User model
+use App\Models\Absensi;
+use App\Models\Announcement;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StudentsExport; // Import the User model
+use App\Models\Kegiatan;
 
 class OperatorController extends Controller
 {
@@ -98,6 +100,25 @@ class OperatorController extends Controller
         // Return the file as a download
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
+
+    public function index()
+{
+    // Cek jika user bukan operator, redirect ke halaman lain
+    if (auth()->user()->role !== 'operator') {
+        abort(403, 'Unauthorized action.');
+    }
+
+    // Ambil data kegiatan dan absensi
+    $kegiatans = Kegiatan::with('absensi.user')->get();
+
+    // Ambil data mahasiswa berdasarkan kelompok operator yang sedang login
+    $users = User::where('role', 'mahasiswa')
+                 ->where('kelompok', auth()->user()->kelompok) // Filter berdasarkan kelompok operator yang login
+                 ->get();
+
+    // Tampilkan view dengan data
+    return view('absensi.index', compact('kegiatans', 'users'));
+}
 
 
 }

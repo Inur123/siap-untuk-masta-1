@@ -184,6 +184,48 @@
               ><!--//nav-link-->
             </li>
             @endif
+            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'operator')
+    <li class="nav-item">
+        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+        <a class="nav-link {{ request()->is('kegiatan*') ? 'active' : '' }}" href="{{ url('kegiatan') }}">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                  </svg>
+            </span>
+            <span class="nav-link-text">Data Kegiatan</span>
+        </a>
+        <!--//nav-link-->
+    </li>
+@endif
+@if(auth()->user()->role === 'admin')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('absensi*') ? 'active' : '' }}" href="{{ url('absensi') }}">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check" viewBox="0 0 16 16">
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm4.5 3.5a.5.5 0 0 1 .5.5v3h2v-3a.5.5 0 0 1 1 0v3.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V8a.5.5 0 0 1 .5-.5zM6 2a.5.5 0 0 1 .5-.5H9A.5.5 0 0 1 9.5 2v.5H6V2z"/>
+                </svg>
+            </span>
+            <span class="nav-link-text">Data Absensi</span>
+        </a>
+    </li>
+@endif
+@if(auth()->user()->role === 'operator')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('operator/absensi*') ? 'active' : '' }}" href="{{ url('operator/absensi') }}">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check" viewBox="0 0 16 16">
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm4.5 3.5a.5.5 0 0 1 .5.5v3h2v-3a.5.5 0 0 1 1 0v3.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V8a.5.5 0 0 1 .5-.5zM6 2a.5.5 0 0 1 .5-.5H9A.5.5 0 0 1 9.5 2v.5H6V2z"/>
+                </svg>
+            </span>
+            <span class="nav-link-text">Data Absensi</span>
+        </a>
+    </li>
+@endif
+
+
+
             <!--//nav-item-->
           </ul>
           <!--//app-menu-->

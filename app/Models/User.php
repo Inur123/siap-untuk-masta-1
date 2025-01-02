@@ -38,9 +38,17 @@ class User extends Authenticatable
         'password' => 'hashed', // Laravel 10+ hashed casting
     ];
 
-
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class); // Relasi hasMany ke Absensi
+    }
     /**
      * Relasi dengan Group (kelompok) - Setiap User hanya memiliki satu Group
      */
+    public function kegiatan()
+    {
+        return $this->belongsTo(Kegiatan::class);
+    }
+
 
 }
