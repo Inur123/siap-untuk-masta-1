@@ -224,6 +224,19 @@
     </li>
 @endif
 
+@if(auth()->user()->role === 'mahasiswa')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('mahasiswa/absensi*') ? 'active' : '' }}" href="{{ url('mahasiswa/absensi') }}">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check" viewBox="0 0 16 16">
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm4.5 3.5a.5.5 0 0 1 .5.5v3h2v-3a.5.5 0 0 1 1 0v3.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V8a.5.5 0 0 1 .5-.5zM6 2a.5.5 0 0 1 .5-.5H9A.5.5 0 0 1 9.5 2v.5H6V2z"/>
+                </svg>
+            </span>
+            <span class="nav-link-text">Data Absensi</span>
+        </a>
+    </li>
+@endif
+
 
 
             <!--//nav-item-->

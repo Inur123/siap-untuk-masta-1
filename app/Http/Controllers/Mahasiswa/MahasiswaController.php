@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Models\User;
+use App\Models\Absensi;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -124,5 +125,21 @@ public function getAnnouncementsByRole()
     $announcements = Announcement::where('role', $role)->latest()->get();
 
     return view('mahasiswa.dashboard', compact('announcements'));
+}
+
+
+public function absensi()
+{
+    // Get the authenticated student (mahasiswa)
+    $user = Auth::user();
+
+    // Fetch the attendance data for the student (mahasiswa) for all kegiatan
+    $absensi = Absensi::where('user_id', $user->id)
+        ->with('kegiatan')  // Eager load the related 'kegiatan' (event)
+        ->latest()
+        ->get();
+
+    // Return the view with the attendance data
+    return view('mahasiswa.absensi', compact('absensi'));
 }
 }

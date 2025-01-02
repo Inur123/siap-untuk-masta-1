@@ -143,7 +143,8 @@ Route::middleware(['auth', 'role:admin,operator'])->group(function () {
     Route::post('/absensi/{kegiatan_id}/{user_id}/update', [AbsensiController::class, 'updateAbsensi']);
 
     Route::post('/absensi/{kegiatanId}/{userId}/update', [AbsensiController::class, 'update']);
+});
 
-
-
+Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
+    Route::get('mahasiswa/absensi', [MahasiswaController::class, 'absensi'])->name('mahasiswa.absensi');
 });
