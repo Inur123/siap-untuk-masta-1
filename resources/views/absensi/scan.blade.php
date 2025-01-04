@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+<div class="container d-flex justify-content-center align-items-center" style="">
     <div class="text-center">
         <h1 class="mb-4">Scan QR Code untuk Kegiatan: {{ $kegiatan->nama_kegiatan }}</h1>
 
