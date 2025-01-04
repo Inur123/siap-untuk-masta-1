@@ -9,8 +9,26 @@ use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Operator\OperatorController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Mahasiswa\MahasiswaController;
 Auth::routes();
+
+// Menambahkan route untuk auth (termasuk reset password)
+Auth::routes(['reset' => true]);
+
+// Menampilkan form permintaan reset password
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+
+// Mengirimkan link reset password ke email pengguna
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+// Menampilkan form untuk mengatur ulang password
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+
+// Menangani permintaan reset password
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
 
 // Home route for redirection after login
 Route::get('/', [HomeController::class, 'index'])->name('home');

@@ -66,14 +66,13 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_reset_tokens',
-            'expire' => 60, // Expiry in minutes
-            'throttle' => 60, // Throttle time between token generations
-        ],
+  'passwords' => [
+    'users' => [
+        'provider' => 'users',
+        'table' => 'password_resets',
+        'expire' => 120,  // 120 menit (default 60 menit)
     ],
+],
 
     /*
     |--------------------------------------------------------------------------

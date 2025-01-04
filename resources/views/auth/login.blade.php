@@ -10,7 +10,7 @@
 
     <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
     <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
-    <link rel="shortcut icon" href="{{ asset('template/assets/images/logo-masta24.png') }}"" />
+    <link rel="shortcut icon" href="{{ asset('template/assets/images/logo-masta24.png') }}" />
 
     <!-- FontAwesome JS-->
     <script defer src="{{ asset('template/assets/plugins/fontawesome/js/all.min.js') }}"></script>
@@ -35,6 +35,15 @@
           top: 50%;
           transform: translateY(-50%);
           cursor: pointer;
+          z-index: 10; /* Tambahkan z-index agar ikon berada di atas */
+        }
+
+        .input-group {
+          position: relative;
+        }
+
+        .input-group input {
+          padding-right: 30px; /* Untuk memberi ruang bagi ikon */
         }
     </style>
 </head>
@@ -56,18 +65,24 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <div class="password mb-3 position-relative">
+                            <div class="password mb-0">
                                 <label for="password">Password</label>
-                                <input id="password" name="password" type="password" class="form-control signin-password" placeholder="Password" required value="{{ old('password') }}">
-                                <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                                <div class="input-group">
+                                    <input id="password" name="password" type="password" class="form-control signin-password" placeholder="Password" required value="{{ old('password') }}">
+                                    <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                                </div>
                                 @error('password')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
+                            </div>
+                            <div class="text-end mb-2">
+                                <a href="{{ route('password.request') }}" class="text-link ">Lupa Password?</a>
                             </div>
                             <div class="g-recaptcha mb-3" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
                             @error('g-recaptcha-response')
                                 <small class="text-danger ">{{ $message }}</small>
                             @enderror
+
                             <div class="text-center">
                                 <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Log In</button>
                             </div>

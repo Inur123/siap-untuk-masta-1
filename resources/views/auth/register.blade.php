@@ -24,6 +24,22 @@
         input[type="number"] {
           -moz-appearance: textfield; /* Untuk Firefox */
         }
+        .eye-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          z-index: 10; /* Tambahkan z-index agar ikon berada di atas */
+        }
+
+        .input-group {
+          position: relative;
+        }
+
+        .input-group input {
+          padding-right: 30px; /* Untuk memberi ruang bagi ikon */
+        }
       </style>
 </head>
 <body class="app app-signup p-0">
@@ -188,21 +204,25 @@
                                 <!-- Password Input -->
                                 <div class="mb-2">
                                     <label for="password">Password</label>
-                                    <input id="password" type="password"
-                                        class="form-control @error('password') is-invalid @enderror"
-                                        name="password" placeholder="Password" required autocomplete="new-password">
+                                    <div class="input-group">
+                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="Password" required autocomplete="new-password" value="{{ old('password') }}">
+                                        <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                                    </div>
                                     @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
+                                        <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
                                 <!-- Confirm Password -->
                                 <div class="mb-2">
                                     <label for="password-confirm">Confirm Password</label>
-                                    <input id="password-confirm" type="password"
-                                        class="form-control" placeholder="Confirm Password" name="password_confirmation" required autocomplete="new-password">
+                                    <div class="input-group">
+                                        <input id="password-confirm" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="Confirm Password" name="password_confirmation" required autocomplete="new-password">
+                                        <i class="fa fa-eye eye-icon" id="togglePasswordConfirm" onclick="togglePasswordConfirmVisibility()"></i>
+                                    </div>
+                                    @error('password_confirmation')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
                                 <div class="g-recaptcha mb-3" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
                                 @error('g-recaptcha-response')
@@ -294,5 +314,35 @@
         });
     });
 </script>
+<script>
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('togglePassword');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.add('fa-eye-slash');
+            eyeIcon.classList.remove('fa-eye');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.add('fa-eye');
+            eyeIcon.classList.remove('fa-eye-slash');
+        }
+    }
+
+    function togglePasswordConfirmVisibility() {
+        const passwordConfirmField = document.getElementById('password-confirm');
+        const eyeIcon = document.getElementById('togglePasswordConfirm');
+        if (passwordConfirmField.type === 'password') {
+            passwordConfirmField.type = 'text';
+            eyeIcon.classList.add('fa-eye-slash');
+            eyeIcon.classList.remove('fa-eye');
+        } else {
+            passwordConfirmField.type = 'password';
+            eyeIcon.classList.add('fa-eye');
+            eyeIcon.classList.remove('fa-eye-slash');
+        }
+    }
+</script>
+
 </body>
 </html>
