@@ -167,6 +167,8 @@ Route::middleware(['auth', 'role:admin,operator'])->group(function () {
     Route::get('/card', [AbsensiController::class, 'card'])->name('absensi.card');
     Route::get('absensi/{kegiatanId}/group/{kelompokId}', [AbsensiController::class, 'showGroupDetail'])->name('absensi.group.detail');
 
+    Route::get('/export-absensi', [KegiatanController::class, 'exportAbsensi'])->name('export.absensi');
+    Route::get('operator/absensi/export/{kegiatan_id}/{kelompok}', [AbsensiController::class, 'exportAbsensi'])->name('operator.absensi.export');
 });
 
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {

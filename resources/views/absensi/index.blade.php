@@ -8,6 +8,33 @@
 <div class="container">
     <h2>Daftar Kegiatan dan Absensi</h2>
 
+    <!-- Dropdown untuk memilih kegiatan dan kelompok (admin) -->
+    @if(auth()->user()->role === 'admin')
+    <form action="{{ route('export.absensi') }}" method="GET" class="mb-3">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="kegiatan">Pilih Kegiatan</label>
+                <select name="kegiatan_id" id="kegiatan" class="form-control">
+                    @foreach($kegiatans as $kegiatan)
+                        <option value="{{ $kegiatan->id }}">{{ $kegiatan->nama_kegiatan }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="kelompok">Pilih Kelompok</label>
+                <select name="kelompok" id="kelompok" class="form-control">
+                    <option value="all">Semua Kelompok</option>
+                    @foreach(range(1, 14) as $kelompok)
+                        <option value="{{ $kelompok }}">Kelompok {{ $kelompok }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Download Excel</button>
+    </form>
+@endif
+
+
     <!-- Bootstrap grid to display events in 3 columns -->
     <div class="row">
         @foreach($kegiatans as $kegiatan)

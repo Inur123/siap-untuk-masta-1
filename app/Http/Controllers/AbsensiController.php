@@ -6,7 +6,8 @@ use App\Models\User;
 use App\Models\Absensi;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
-
+use App\Exports\AbsensiExport;
+use Maatwebsite\Excel\Facades\Excel;
 class AbsensiController extends Controller
 {
     /**
@@ -342,6 +343,26 @@ public function card()
 
     // Return the 'absensi.card' view and pass the kegiatan data
     return view('absensi.card', compact('kegiatan'));
+}
+
+
+public function exportAbsensi($kegiatan_id, $kelompok)
+{
+    // Validasi peran pengguna
+    if (auth()->user()->role !== 'operator' && auth()->user()->role !== 'admin') {
+        abort(403, 'Unauthorized action.');
+    }
+
+    $user = auth()->user();
+    $kegiatan = Kegiatan::findOrFail($kegiatan_id);
+
+    // Ambil data absensi berdasarkan kegiatan dan kelompok operator
+    $absensi = $kegiatan->absensi()->whereHas('user', function ($query) use ($kelompok) {
+        $query->where('kelompok', $kelompok);
+    })->get();
+
+    // Ekspor ke Excel menggunakan Maatwebsite Excel
+    return Excel::download(new AbsensiExport($absensi), 'absensi_kelompok_'.$kelompok.'_kegiatan_'.$kegiatan->id.'.xlsx');
 }
 
 }

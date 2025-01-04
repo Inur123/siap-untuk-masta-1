@@ -31,6 +31,11 @@
 
                         <!-- Button for detailed attendance -->
                         <a href="{{ route('operator.absensi.detail', ['kegiatanId' => $kegiatan->id]) }}" class="btn btn-outline-primary btn-sm">Detail Absensi</a>
+
+                        <!-- Button for downloading absensi for the operator's group -->
+                        <a href="{{ route('operator.absensi.export', ['kegiatan_id' => $kegiatan->id, 'kelompok' => $operator->kelompok]) }}" class="btn btn-outline-success btn-sm">
+                            Unduh Absensi
+                        </a>
                     </div>
                 </div>
             </div>
