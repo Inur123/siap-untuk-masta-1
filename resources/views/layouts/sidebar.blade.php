@@ -229,6 +229,8 @@
             @endif
 
 
+
+
             @if(auth()->user()->role === 'operator')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('operator/absensi*') ? 'active' : '' }}" href="{{ url('operator/absensi') }}">
@@ -256,6 +258,19 @@
                     </a>
                 </li>
             @endif
+            @if(auth()->check())
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('sertifikat/preview*') ? 'active' : '' }}" href="{{ route('sertifikat.preview') }}">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM13 4.5 10.5 2H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+                            <path d="M5.5 8.5a.5.5 0 0 1 .5-.5h1V6h2v2h1a.5.5 0 0 1 0 1h-1v2h-2V9H6a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </span>
+                    <span class="nav-link-text">Download Sertifikat</span>
+                </a>
+            </li>
+        @endif
 
 
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Operator\OperatorController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -70,6 +71,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/export-group-{kelompok}-to-word', [AdminController::class, 'exportGroupMembersToWord'])->name('admin.exportGroupMembersToWord');
 Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersToWord'])->name('admin.exportUsersToWord');
+
+    // sertifikat
+
+
 
 });
 
@@ -169,8 +174,17 @@ Route::middleware(['auth', 'role:admin,operator'])->group(function () {
 
     Route::get('/export-absensi', [KegiatanController::class, 'exportAbsensi'])->name('export.absensi');
     Route::get('operator/absensi/export/{kegiatan_id}/{kelompok}', [AbsensiController::class, 'exportAbsensi'])->name('operator.absensi.export');
+
+    Route::get('/sertifikat/preview', [CertificateController::class, 'showPreview'])->name('sertifikat.preview');
+    Route::get('/sertifikat/generate', [CertificateController::class, 'generate'])->name('sertifikat.generate');
+    Route::get('/sertifikat/download/{id}', [CertificateController::class, 'download'])->name('sertifikat.download');
+
 });
 
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('mahasiswa/absensi', [MahasiswaController::class, 'absensi'])->name('mahasiswa.absensi');
 });
+
+Route::middleware('auth')->get('/sertifikat/preview', [CertificateController::class, 'showPreview'])->name('sertifikat.preview');
+Route::middleware('auth')->get('/sertifikat/generate', [CertificateController::class, 'generate'])->name('sertifikat.generate');
+Route::middleware('auth')->get('/sertifikat/download/{id}', [CertificateController::class, 'download'])->name('sertifikat.download');
