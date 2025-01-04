@@ -212,7 +212,7 @@
         </a>
     </li>
 @endif
-@if(auth()->user()->role === 'admin')
+@if(auth()->user()->role === 'admin' || auth()->user()->role === 'operator')
     <li class="nav-item">
         <a class="nav-link {{ request()->is('card*') ? 'active' : '' }}" href="{{ url('card') }}">
             <span class="nav-icon">
@@ -228,6 +228,8 @@
         </a>
     </li>
 @endif
+
+
 @if(auth()->user()->role === 'operator')
     <li class="nav-item">
         <a class="nav-link {{ request()->is('operator/absensi*') ? 'active' : '' }}" href="{{ url('operator/absensi') }}">

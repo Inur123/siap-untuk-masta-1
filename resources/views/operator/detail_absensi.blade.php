@@ -26,7 +26,9 @@
             <div class="app-card app-card-stat shadow-sm h-100">
                 <div class="app-card-body p-3 p-lg-4">
                     <h4 class="stats-type mb-1">Total yang Hadir</h4>
-                    <div class="stats-figure">{{ $kegiatan->absensi->where('status', 'hadir')->count() }}</div>
+                    <div class="stats-figure">
+                        {{ $kegiatan->absensi->where('status', 'hadir')->count() }}
+                    </div>
                 </div>
                 <a class="app-card-link-mask" href="#"></a>
             </div>
@@ -37,7 +39,9 @@
             <div class="app-card app-card-stat shadow-sm h-100">
                 <div class="app-card-body p-3 p-lg-4">
                     <h4 class="stats-type mb-1">Total yang Tidak Hadir</h4>
-                    <div class="stats-figure">{{ $kegiatan->absensi->where('status', 'tidak hadir')->count() }}</div>
+                    <div class="stats-figure">
+                        {{ $kegiatan->absensi->where('status', 'tidak_hadir')->count() }}
+                    </div>
                 </div>
                 <a class="app-card-link-mask" href="#"></a>
             </div>
@@ -48,7 +52,9 @@
             <div class="app-card app-card-stat shadow-sm h-100">
                 <div class="app-card-body p-3 p-lg-4">
                     <h4 class="stats-type mb-1">Total Izin</h4>
-                    <div class="stats-figure">{{ $kegiatan->absensi->where('status', 'izin')->count() }}</div>
+                    <div class="stats-figure">
+                        {{ $kegiatan->absensi->where('status', 'izin')->count() }}
+                    </div>
                 </div>
                 <a class="app-card-link-mask" href="#"></a>
             </div>
@@ -72,7 +78,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $absensi->user->name }}</td>
                     <td>{{ $absensi->user->nim }}</td>
-                    <td>{{ ucfirst($absensi->status) }}</td>
+                    <td>{{ ucfirst(str_replace('_', ' ', $absensi->status)) }}</td>
                     <td>{{ $absensi->created_at->format('d-m-Y | H:i') }}</td> <!-- Tanggal absen -->
                 </tr>
             @endforeach
