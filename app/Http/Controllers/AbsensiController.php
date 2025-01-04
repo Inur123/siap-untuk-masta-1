@@ -12,6 +12,8 @@ class AbsensiController extends Controller
     /**
      * Display the QR code scanning page.
      */
+
+
     public function scan($kegiatan_id)
     {
         // Fetch the kegiatan data
@@ -72,11 +74,6 @@ class AbsensiController extends Controller
                     'status' => 'hadir',  // Status set to 'hadir'
                 ]);
             }
-
-            // Update all other absensi statuses for this kegiatan to 'hadir'
-            Absensi::where('kegiatan_id', $kegiatan->id)
-                ->where('status', '!=', 'hadir') // Skip already present 'hadir' statuses
-                ->update(['status' => 'hadir']);
 
             // Return success response with necessary data, including kegiatan name
             return response()->json([
@@ -340,7 +337,10 @@ public function updateAbsensi(Request $request, $kegiatan_id, $user_id)
 
 public function card()
 {
-    $kegiatan = Kegiatan::all(); // Mengambil semua data kegiatan
+    // Retrieve all kegiatan (activities)
+    $kegiatan = Kegiatan::all();
+
+    // Return the 'absensi.card' view and pass the kegiatan data
     return view('absensi.card', compact('kegiatan'));
 }
 

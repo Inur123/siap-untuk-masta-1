@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegistrationConfirmation;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -115,6 +117,8 @@ protected function formatPhoneNumber($nohp)
         $this->assignGroupToUser($user);
         $this->sendTelegramNotification($user);
         $this->sendWhatsAppToUser($user);
+
+        Mail::to($user->email)->send(new RegistrationConfirmation($user));
 
         // Redirect to the login page with a success message
         return redirect('/login')->with('success', 'Registration successful! You can now log in.');
