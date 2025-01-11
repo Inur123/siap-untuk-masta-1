@@ -3,7 +3,9 @@
 @section('sidebar')
     @include('layouts.sidebar')
 @endsection
-
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 @section('content')
 <div class="container">
     <h1 class="my-4">Daftar Kegiatan</h1>
@@ -19,8 +21,8 @@
     @if($kegiatans->isEmpty())
         <p>Tidak ada kegiatan yang tersedia.</p>
     @else
-        <table class="table table-bordered">
-            <thead>
+    <table id="example" class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+        <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Kegiatan</th>
@@ -49,6 +51,11 @@
                 @endforeach
             </tbody>
         </table>
+        <script>
+            $(document).ready(function () {
+                new DataTable('#example');
+            });
+        </script>
     @endif
 </div>
 @endsection
