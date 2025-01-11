@@ -250,24 +250,31 @@
                                   <span class="nav-link-text">Data Absensi</span>
                               </a>
                           </li>
+
                       @endif
                       @if (auth()->user()->role === 'operator' || auth()->user()->role === 'mahasiswa')
                           <li class="nav-item">
                               <a class="nav-link {{ request()->is('sertifikat/preview*') ? 'active' : '' }}"
                                   href="{{ route('sertifikat.preview') }}">
                                   <span class="nav-icon">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                          fill="currentColor" class="bi bi-file-earmark-arrow-down"
-                                          viewBox="0 0 16 16">
-                                          <path
-                                              d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM13 4.5 10.5 2H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
-                                          <path
-                                              d="M5.5 8.5a.5.5 0 0 1 .5-.5h1V6h2v2h1a.5.5 0 0 1 0 1h-1v2h-2V9H6a.5.5 0 0 1-.5-.5z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard-fill" viewBox="0 0 16 16">
+                                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5M9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8m1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96q.04-.245.04-.5M7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0"/>
                                       </svg>
                                   </span>
                                   <span class="nav-link-text">Download Sertifikat</span>
                               </a>
                           </li>
+                          <li class="nav-item">
+                            <a class="nav-link {{ request()->is('kritik-saran*') ? 'active' : '' }}"
+                                href="{{ route('kritik-saran') }}">
+                                <span class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                                        <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z"/>
+                                      </svg>
+                                </span>
+                                <span class="nav-link-text">Kritik dan Saran</span>
+                            </a>
+                        </li>
                       @endif
 
                       @if (auth()->user()->role === 'admin')
@@ -275,13 +282,8 @@
                               <a class="nav-link {{ request()->is('generate-certificate-admin') ? 'active' : '' }}"
                                   href="{{ url('/generate-certificate-admin') }}">
                                   <span class="nav-icon">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                          fill="currentColor" class="bi bi-file-earmark-arrow-down"
-                                          viewBox="0 0 16 16">
-                                          <path
-                                              d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM13 4.5 10.5 2H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
-                                          <path
-                                              d="M5.5 8.5a.5.5 0 0 1 .5-.5h1V6h2v2h1a.5.5 0 0 1 0 1h-1v2h-2V9H6a.5.5 0 0 1-.5-.5z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard-fill" viewBox="0 0 16 16">
+                                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5M9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8m1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96q.04-.245.04-.5M7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0"/>
                                       </svg>
                                   </span>
                                   <span class="nav-link-text">Generate Sertifikat BY Name</span>
