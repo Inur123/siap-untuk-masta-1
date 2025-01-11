@@ -120,4 +120,73 @@ class CertificateController extends Controller
         // Download sertifikat dengan nama yang telah ditentukan
         return response()->download(public_path('storage/' . $certificate->certificate_image), $fileName);
     }
+
+    public function generateForAdmin(Request $request)
+    {
+        // Validasi input dari admin (nama)
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        // Ambil nama yang dimasukkan oleh admin
+        $name = ucwords(strtolower($validated['name']));
+
+        // Membuat nama file dengan format Nama
+        $fileName = strtolower(str_replace(' ', '_', $name)) . '.png';
+
+        // Path ke template sertifikat
+        $templatePath = public_path('template/sertifikat-template.png');
+
+        // Cek apakah file template ada
+        if (!file_exists($templatePath)) {
+            return response()->json(['error' => 'Template file not found.'], 404);
+        }
+
+        // Membuka gambar template
+        $img = imagecreatefrompng($templatePath);
+
+        // Tentukan warna teks
+        $color = imagecolorallocate($img, 165, 42, 42);  // RGB untuk #a52a2a
+
+        // Tentukan font dan ukuran
+        $fontPath = public_path('fonts/Roboto-Medium.ttf');  // Pastikan path font benar
+        $fontSize = 50;  // Ukuran font
+
+        // Hitung posisi teks agar berada di tengah
+        $textBoundingBox = imagettfbbox($fontSize, 0, $fontPath, $name);
+        $textWidth = $textBoundingBox[2] - $textBoundingBox[0];  // Lebar teks
+        $textHeight = $textBoundingBox[1] - $textBoundingBox[7];  // Tinggi teks
+
+        // Hitung posisi teks agar berada di tengah secara horizontal
+        $x = (imagesx($img) - $textWidth) / 2;
+        $y = (imagesy($img) - $textHeight) / 2 - 37.8;  // Menaikkan teks sebesar 1 cm
+
+        // Menambahkan teks ke gambar
+        imagettftext($img, $fontSize, 0, $x, $y, $color, $fontPath, $name);
+
+        // Menyimpan gambar ke file sementara di server
+        $outputPath = 'sertifikat/' . $fileName;
+
+        // Pastikan folder 'sertifikat' ada
+        if (!is_dir(public_path('storage/sertifikat'))) {
+            mkdir(public_path('storage/sertifikat'), 0777, true);
+        }
+
+        // Menyimpan gambar ke folder sertifikat
+        $path = public_path('storage/' . $outputPath);
+        imagepng($img, $path);
+
+        // Hapus gambar dari memori
+        imagedestroy($img);
+
+        // Simpan nama file di session untuk digunakan di view
+        session(['certificate_image' => asset('storage/' . $outputPath)]);
+        session(['certificate_file' => $fileName]);
+
+        // Kembalikan response ke view
+        return redirect()->back();
+    }
+
+
+
 }

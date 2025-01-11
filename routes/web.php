@@ -37,6 +37,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
+
     Route::resource('kegiatan', KegiatanController::class);
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'showAllUsers'])->name('admin.users');
@@ -76,7 +77,17 @@ Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersT
 
 
 
+
 });
+
+// GET route to show the form for generating certificate
+Route::middleware(['auth', 'role:admin'])->get('/generate-certificate-admin', function () {
+    return view('generate-certificate-admin'); // Return the view with the form
+});
+
+// POST route to handle form submission for generating the certificate
+Route::middleware(['auth', 'role:admin'])->post('/generate-certificate-admin', [CertificateController::class, 'generateForAdmin']);
+
 
 // Operator routes
 Route::middleware(['auth', 'role:operator'])->group(function () {
@@ -188,3 +199,6 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 Route::middleware('auth')->get('/sertifikat/preview', [CertificateController::class, 'showPreview'])->name('sertifikat.preview');
 Route::middleware('auth')->get('/sertifikat/generate', [CertificateController::class, 'generate'])->name('sertifikat.generate');
 Route::middleware('auth')->get('/sertifikat/download/{id}', [CertificateController::class, 'download'])->name('sertifikat.download');
+
+
+
