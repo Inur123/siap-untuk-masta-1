@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\KegiatanController;
@@ -201,4 +202,4 @@ Route::middleware('auth')->get('/sertifikat/generate', [CertificateController::c
 Route::middleware('auth')->get('/sertifikat/download/{id}', [CertificateController::class, 'download'])->name('sertifikat.download');
 
 
-
+Route::get('/kritik-saran', [Controller::class, 'kritikSaran'])->name('kritik-saran');
