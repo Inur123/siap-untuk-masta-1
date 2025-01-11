@@ -162,30 +162,31 @@ class AbsensiController extends Controller
     }
 
     public function index()
-{
-    // Check if the user is an operator or admin
-    if (auth()->user()->role !== 'operator' && auth()->user()->role !== 'admin') {
-        abort(403, 'Unauthorized action.');
+    {
+        // Check if the user is an operator or admin
+        if (auth()->user()->role !== 'operator' && auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Get all activities with attendance data, optimized by using counts for each attendance status
+        $kegiatans = Kegiatan::withCount([
+            'absensi as hadir_count' => function($query) {
+                $query->where('status', 'hadir');
+            },
+            'absensi as tidak_hadir_count' => function($query) {
+                $query->where('status', 'tidak_hadir');
+            },
+            'absensi as izin_count' => function($query) {
+                $query->where('status', 'izin');
+            }
+        ])->get();
+
+        // Get distinct kelompok values from the mahasiswa users
+        $kelompok = User::where('role', 'mahasiswa')->distinct()->pluck('kelompok');
+
+        return view('absensi.index', compact('kegiatans', 'kelompok'));
     }
 
-    // Get all activities with attendance data, optimized by using counts for each attendance status
-    $kegiatans = Kegiatan::withCount([
-        'absensi as hadir_count' => function($query) {
-            $query->where('status', 'hadir');
-        },
-        'absensi as tidak_hadir_count' => function($query) {
-            $query->where('status', 'tidak_hadir');
-        },
-        'absensi as izin_count' => function($query) {
-            $query->where('status', 'izin');
-        }
-    ])->get();
-
-    // Get all users with the 'mahasiswa' role
-    $users = User::where('role', 'mahasiswa')->get();
-
-    return view('absensi.index', compact('kegiatans', 'users'));
-}
 
 
     public function groups($kegiatanId, $kelompokId)

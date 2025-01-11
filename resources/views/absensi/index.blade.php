@@ -24,8 +24,8 @@
                 <label for="kelompok">Pilih Kelompok</label>
                 <select name="kelompok" id="kelompok" class="form-control">
                     <option value="all">Semua Kelompok</option>
-                    @foreach(range(1, 14) as $kelompok)
-                        <option value="{{ $kelompok }}">Kelompok {{ $kelompok }}</option>
+                    @foreach($kelompok as $kel)
+                        <option value="{{ $kel }}">Kelompok {{ $kel }}</option>
                     @endforeach
                 </select>
             </div>

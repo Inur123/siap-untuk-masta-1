@@ -472,12 +472,10 @@ public function showMahasiswa()
 
 public function showGroups()
 {
-    // Ambil hanya 5 kelompok yang ada berdasarkan kolom 'kelompok' di tabel 'users'
+    // Ambil semua data mahasiswa dengan informasi kelompok, fakultas, nim, nama, dan prodi
     $groups = User::select('kelompok', 'fakultas', 'nim', 'name', 'prodi')
                   ->where('role', 'mahasiswa')  // Filter hanya mahasiswa
-                  ->distinct()  // Ambil hanya kelompok yang unik
-                  ->take(5)  // Hanya ambil 5 data kelompok
-                  ->get();
+                  ->get(); // Ambil semua data tanpa batasan
 
     // Gunakan collection untuk mengelompokkan data berdasarkan 'kelompok'
     $groupDetails = $groups->groupBy('kelompok');
@@ -488,13 +486,15 @@ public function showGroups()
         $groupDetails[$kelompok] = [
             'kelompok' => $kelompok,
             'fakultas' => $group->first()->fakultas, // Ambil fakultas dari anggota pertama
-            'members' => $group // Anggota yang sudah dikelompokkan berdasarkan 'kelompok'
+            'members' => $group, // Anggota yang sudah dikelompokkan berdasarkan 'kelompok'
+            'memberCount' => $group->count() // Tambahkan jumlah anggota dalam kelompok
         ];
     }
 
     // Pass groupDetails ke view
     return view('admin.groups', ['groupDetails' => $groupDetails]);
 }
+
 
 
 

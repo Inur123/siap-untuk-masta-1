@@ -53,46 +53,73 @@ class RegisterController extends Controller
     }
 
     public function create(array $data)
-{
-    $nohp = $this->formatPhoneNumber($data['nohp']);
-    // Simpan file yang diunggah dan dapatkan path file
-    $filePath = $data['file']->store('uploads', 'public');
+    {
+        // Format phone number and handle file upload
+        $nohp = $this->formatPhoneNumber($data['nohp']);
+        $filePath = $data['file']->store('uploads', 'public');
 
-    // Generate QR code data, ini menggunakan NIM sebagai data untuk QR code
-    $qrCodeData = $data['nim']; // Gunakan NIM atau data lain yang sesuai
+        // QR code data
+        $qrCodeData = $data['nim']; // Use NIM or other data
 
-    // Tentukan nama file QR code berdasarkan NIM
-    $qrCodeFileName = 'qrcodes/' . $data['nim'] . '.png'; // Gunakan NIM sebagai nama file
+        // Define the file name for the QR code
+        $qrCodeFileName = 'qrcodes/' . $data['nim'] . '.png'; // Use NIM for file name
 
-    // Generate QR code as PNG
-    $qrCode = QrCode::format('png') // Set format PNG
-        ->size(300)  // Set ukuran QR Code
-        ->generate($qrCodeData);  // Generate QR code
+        // Generate the QR code as a PNG
+        $qrCode = QrCode::format('png')->size(300)->generate($qrCodeData);
 
-    // Simpan QR code ke storage publik
-    Storage::disk('public')->put($qrCodeFileName, $qrCode);
+        // Convert the QR code to an image resource
+        $qrCodeImage = imagecreatefromstring($qrCode);
 
-    // Buat user baru dengan data yang diterima
-    $user = User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'password' => Hash::make($data['password']),
-        'nim' => $data['nim'],
-        'fakultas' => $data['fakultas'],
-        'prodi' => $data['prodi'],
-        'file' => $filePath,
-        'kelompok' => null, // Set ke null, kelompok akan diatur nanti
-        'role' => 'mahasiswa',
-        'nohp' => $data['nohp'],
-        'alamat' => $data['alamat'],
-        'jeniskelamin' => $data['jeniskelamin'],
-        'qr_code' => $qrCodeFileName, // Simpan QR Code path di database
-    ]);
+        // Get the dimensions of the QR code image
+        $width = imagesx($qrCodeImage);
+        $height = imagesy($qrCodeImage);
 
-    event(new UserRegistered($user));
+        // Create a new image with extra space for the border
+        $borderSize = 10; // Size of the border
+        $imageWithBorder = imagecreatetruecolor($width + ($borderSize * 2), $height + ($borderSize * 2));
 
-    return $user;
-}
+        // Set the background color (white)
+        $white = imagecolorallocate($imageWithBorder, 255, 255, 255);
+        imagefill($imageWithBorder, 0, 0, $white);
+
+        // Copy the QR code onto the new image with the border
+        imagecopy($imageWithBorder, $qrCodeImage, $borderSize, $borderSize, 0, 0, $width, $height);
+
+        // Set the border color (black)
+        $black = imagecolorallocate($imageWithBorder, 0, 0, 0);
+
+        // Draw the border around the QR code
+        imagerectangle($imageWithBorder, 0, 0, imagesx($imageWithBorder) - 1, imagesy($imageWithBorder) - 1, $black);
+
+        // Save the image with the border to storage
+        $pathWithBorder = storage_path('app/public/' . $qrCodeFileName);
+        imagepng($imageWithBorder, $pathWithBorder);
+
+        // Free up memory
+        imagedestroy($qrCodeImage);
+        imagedestroy($imageWithBorder);
+
+        // Create the user and save the QR code path
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'nim' => $data['nim'],
+            'fakultas' => $data['fakultas'],
+            'prodi' => $data['prodi'],
+            'file' => $filePath,
+            'kelompok' => null,
+            'role' => 'mahasiswa',
+            'nohp' => $data['nohp'],
+            'alamat' => $data['alamat'],
+            'jeniskelamin' => $data['jeniskelamin'],
+            'qr_code' => $qrCodeFileName, // Store the QR code path in database
+        ]);
+        event(new UserRegistered($user));
+
+        return $user;
+    }
+
 
 protected function formatPhoneNumber($nohp)
 {
@@ -162,7 +189,7 @@ protected function formatPhoneNumber($nohp)
         if (isset($groupStatus[$fakultas])) {
             // Find the next available group in the round-robin manner
             foreach ($groupStatus[$fakultas] as $kelompok => $memberCount) {
-                if ($memberCount < 10) {
+                if ($memberCount < 5) {
                     // Assign to the first available group with fewer than 10 members
                     $user->kelompok = $kelompok;
                     $user->save();
