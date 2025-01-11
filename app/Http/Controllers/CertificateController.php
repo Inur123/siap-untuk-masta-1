@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absensi;
 use App\Models\Certificate;
+use App\Models\Kegiatan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -15,12 +17,16 @@ class CertificateController extends Controller
         // Cek apakah sertifikat sudah ada
         $certificate = Certificate::where('user_id', $user->id)->first();
 
-        if ($certificate && $certificate->is_generated) {
-            return view('sertifikat.preview', compact('certificate'));
-        }
+        // Ambil nilai absensi_progress dari tabel 'users'
+        $attendanceProgress = $user->absensi_progress;
 
-        return view('sertifikat.preview', ['certificate' => null]);
+        // Pastikan nilai absensi_progress berada dalam rentang yang valid (0 - 100%)
+        $percentage = ($attendanceProgress >= 0 && $attendanceProgress <= 100) ? $attendanceProgress : 0;
+
+        // Kirim nilai percentage ke view
+        return view('sertifikat.preview', compact('certificate', 'percentage'));
     }
+
 
     public function generate(Request $request)
     {

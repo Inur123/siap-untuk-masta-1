@@ -8,10 +8,12 @@
 <div class="container">
     <h1>Sertifikat</h1>
 
-    <!-- Tombol Generate Sertifikat hanya tampil jika sertifikat belum digenerate -->
-    @if (!$certificate || !$certificate->is_generated)
-        <button id="generateSertifikatBtn" class="btn btn-primary">Generate Sertifikat</button>
-    @endif
+    @if ($percentage >= 80 && (!$certificate || !$certificate->is_generated))
+    <button id="generateSertifikatBtn" class="btn btn-primary">Generate Sertifikat</button>
+@elseif ($percentage < 80)
+    <p>Nilai Anda di bawah KKM. Anda perlu mencapai setidaknya 80% untuk mengunduh sertifikat.</p>
+@endif
+
 
     <!-- Menampilkan Gambar Sertifikat setelah tombol diklik -->
     @if ($certificate && $certificate->is_generated)

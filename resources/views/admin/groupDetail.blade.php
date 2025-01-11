@@ -33,6 +33,7 @@
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">No Hp</th>
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">Alamat</th>
                         <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">Jenis Kelamin</th>
+                        <th class="px-4 py-2 border" style="padding: 8px; text-align: center;">Progres Absensi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,7 @@
                         <td style="padding: 8px; text-align: center;">{{ $member->nohp }}</td>
                         <td style="padding: 8px; text-align: center;">{{ $member->alamat }}</td>
                         <td style="padding: 8px; text-align: center;">{{ $member->jeniskelamin }}</td>
+                        <td style="padding: 8px; text-align: center;">{{ $member->absensi_progress }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -139,7 +139,33 @@ public function absensi()
         ->latest()
         ->get();
 
-    // Return the view with the attendance data
-    return view('mahasiswa.absensi', compact('absensi'));
+    // Calculate the total number of activities
+    $totalKegiatan = $absensi->count();
+
+    // Calculate the number of 'hadir' (present) attendance records
+    $hadirCount = $absensi->where('status', 'hadir')->count();
+
+    // Calculate the attendance percentage
+    if ($totalKegiatan > 0) {
+        $percentage = ($hadirCount / $totalKegiatan) * 100;
+    } else {
+        $percentage = 0;
+    }
+
+    // Apply a specific rule: If there are 3 activities and 2 are present, set percentage to 85%
+    if ($totalKegiatan == 3 && $hadirCount == 2) {
+        $percentage = 85;
+    }
+
+    // Update the user's attendance percentage in the database
+    $user->update([
+        'absensi_progress' => $percentage,
+    ]);
+
+    // Return the view with the attendance data and percentage
+    return view('mahasiswa.absensi', compact('absensi', 'percentage'));
 }
+
+
+
 }

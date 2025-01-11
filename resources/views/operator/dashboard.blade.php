@@ -80,6 +80,7 @@
                         <th style="padding: 8px; text-align: center;">Alamat</th>
                         <th style="padding: 8px; text-align: center;">Jenis Kelamin</th>
                         <th style="padding: 8px; text-align: center;">File</th>
+                        <th style="padding: 8px; text-align: center;">Absensi Progress</th> <!-- New Column -->
 
                     </tr>
             </thead>
@@ -107,6 +108,7 @@
                                 No file available
                             @endif
                         </td>
+                        <td> {{ $student->absensi_progress }}%</td>
 
                     </tr>
                 @endforeach

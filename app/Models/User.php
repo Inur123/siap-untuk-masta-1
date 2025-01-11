@@ -25,6 +25,7 @@ class User extends Authenticatable
         'alamat',
         'jeniskelamin',
         'qr_code',
+        'absensi_progress', // Add this to the fillable array
 
     ];
 

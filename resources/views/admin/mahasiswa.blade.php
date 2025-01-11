@@ -40,6 +40,7 @@
                     <th>No Hp</th>
                     <th>Alamat</th>
                     <th>Jenis Kelamin</th>
+                    <th>Progres Absensi</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -66,6 +67,7 @@
                     <td>{{ $user->nohp }}</td>
                     <td>{{ $user->alamat }}</td>
                     <td>{{ $user->jeniskelamin }}</td>
+                    <td>{{ $user->absensi_progress }}</td>
                     <td>
                         <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-outline-success" title="Edit User" style="margin-right: 5px;">
                             <i class="fas fa-edit"></i> Edit

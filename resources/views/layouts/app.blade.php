@@ -13,7 +13,7 @@
       content="Portal - Bootstrap 5 Admin Dashboard Template For Developers"
     />
 
-    <link rel="shortcut icon" href="{{ asset('template/assets/images/logo-masta24.png') }}"" />
+    <link rel="shortcut icon" href="{{ asset('template/assets/images/logo-masta24.png') }}" />
 
     <!-- FontAwesome JS-->
     <script defer src="{{ asset('template/assets/plugins/fontawesome/js/all.min.js') }}"></script>
