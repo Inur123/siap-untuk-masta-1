@@ -16,7 +16,7 @@
 <!-- Modal Create Announcement -->
 <div id="createAnnouncementModal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center hidden">
     <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-2xl font-semibold mb-4">Create Announcement</h2>
+
         <form action="{{ route('admin.store_announcement') }}" method="POST">
             @csrf
             <div class="mb-3">

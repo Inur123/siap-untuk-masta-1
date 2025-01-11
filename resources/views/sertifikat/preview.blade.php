@@ -7,6 +7,7 @@
 @section('content')
 <div class="container">
     <h1>Sertifikat</h1>
+    <p class="text-danger">*Selebelum melakukan Generate pastikan nama sesuai karena generate hanya bisa di lakukan 1X*</p>
 
     @if ($percentage >= 80 && (!$certificate || !$certificate->is_generated))
     <button id="generateSertifikatBtn" class="btn btn-primary">Generate Sertifikat</button>
