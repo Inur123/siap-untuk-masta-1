@@ -90,6 +90,7 @@ class LoginController extends Controller
         // Send Telegram notification with the login details
         $this->sendTelegramLoginNotification($user, $ipAddress);
 
+
         // Redirect to the intended page after login
         return redirect()->intended($this->redirectPath());
     }

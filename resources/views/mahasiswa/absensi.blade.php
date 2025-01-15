@@ -26,26 +26,34 @@
             </div>
         </div>
 
-        <table id="example" class="table table-bordered" style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kegiatan</th>
-                    <th>Status</th>
-                    <th>Tanggal Absensi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($absensi as $item)
+        <div class="table-responsive">
+            <table id="example" class="table table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse;">
+                <thead class="table-success">
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->kegiatan->nama_kegiatan }}</td>
-                        <td>{{ ucfirst($item->status) }}</td>
-                        <td>{{ $item->created_at->format('d-m-Y | H:i') }}</td>
+                        <th scope="col">No</th>
+                        <th scope="col">Kegiatan</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Tanggal Absensi</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($absensi as $item)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->kegiatan->nama_kegiatan }}</td>
+                            <td>
+                                <span class="badge
+                                    {{ $item->status == 'hadir' ? 'bg-success' : ($item->status == 'tidak_hadir' ? 'bg-danger' : 'bg-warning') }}">
+                                    {{ ucfirst($item->status) }}
+                                </span>
+                            </td>
+                            <td>{{ $item->created_at->format('d-m-Y | H:i') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
         <script>
             $(document).ready(function () {
                 new DataTable('#example');
