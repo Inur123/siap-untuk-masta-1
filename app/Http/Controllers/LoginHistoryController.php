@@ -15,4 +15,12 @@ class LoginHistoryController extends Controller
         // Mengirim data ke view
         return view('login-history', compact('loginHistory')); // Mengirim data login ke view login-history.blade.php
     }
+    public function clearLoginHistory()
+    {
+        // Menghapus semua data login history
+        LoginHistory::truncate();
+
+        // Mengarahkan kembali dengan pesan sukses
+        return redirect()->route('login-history')->with('success', 'Login history cleared successfully!');
+    }
 }

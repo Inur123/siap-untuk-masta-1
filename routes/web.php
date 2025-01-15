@@ -76,8 +76,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/export-group-{kelompok}-to-word', [AdminController::class, 'exportGroupMembersToWord'])->name('admin.exportGroupMembersToWord');
 Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersToWord'])->name('admin.exportUsersToWord');
 
-    // sertifikat
+    // login cek
     Route::get('/login-history', [LoginHistoryController::class, 'showLoginHistory'])->name('login-history');
+    Route::delete('/login-history/clear', [LoginHistoryController::class, 'clearLoginHistory'])->name('clear-login-history');
 
 
 

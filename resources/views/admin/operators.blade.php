@@ -25,7 +25,7 @@
                 <tr>
                     <th>No</th>
                     <th>Name</th>
-                    <th>Email</th>
+                    <th>NIM</th>
                     <th>Kelompok</th>
                     <th>Fakultas</th>
                     <th>Prodi</th>
@@ -37,7 +37,7 @@
                     <tr>
                         <td>{{ $index + 1 }}</td> <!-- Simply use the $index to show item number -->
                         <td>{{ $operator->name }}</td>
-                        <td>{{ $operator->email }}</td>
+                        <td>{{ $operator->nim }}</td>
                         <td>{{ $operator->kelompok }}</td>
                         <td>{{ $operator->fakultas }}</td>
                         <td>{{ $operator->prodi }}</td>

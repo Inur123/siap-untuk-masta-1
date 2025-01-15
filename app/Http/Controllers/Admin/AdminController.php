@@ -279,38 +279,33 @@ class AdminController extends Controller
  */
 public function storeOperator(Request $request)
 {
-    // Validate the request data
+    // Validasi data yang diterima dari form
     $request->validate([
         'name' => 'required|string|max:255',
-        'nim' => 'required|string|max:50', // NIM validation
-        'email' => 'required|email|unique:users',
-        'kelompok' => 'nullable|string',
-        'fakultas' => 'nullable|string',
-        'prodi' => 'nullable|string',
-        'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048', // File is required
+        'nim' => 'required|numeric|digits_between:10,15', // Validasi NIM sebagai angka dan panjang antara 10 hingga 15 digit
+        'kelompok' => 'nullable|string|max:50', // Kelompok bersifat opsional
+        'fakultas' => 'nullable|string|max:100', // Fakultas bersifat opsional
+        'prodi' => 'nullable|string|max:100', // Prodi bersifat opsional
     ]);
 
-    // Handle file upload before creating the user
-    $filePath = $request->file('file')->store('files');
-
-    // Prepare the data for user creation
+    // Siapkan data untuk pembuatan user
     $data = [
         'name' => $request->name,
         'nim' => $request->nim,
-        'email' => $request->email,
-        'password' => bcrypt('password'), // Set default password
-        'role' => 'operator', // Default role is operator
+        'password' => bcrypt('password'), // Password default
+        'role' => 'operator', // Role default adalah operator
         'kelompok' => $request->kelompok,
         'fakultas' => $request->fakultas,
         'prodi' => $request->prodi,
-        'file' => $filePath, // Include file path in user data
     ];
 
-    // Create the user with the file path included
+    // Membuat user baru dengan data yang telah disiapkan
     User::create($data);
 
-    return redirect()->route('admin.users')->with('success', 'Pemandu created successfully!');
+    // Redirect ke halaman pengguna dengan pesan sukses
+    return redirect()->route('admin.operators')->with('success', 'Pemandu created successfully!');
 }
+
 
 public function editOperator($id)
 {
