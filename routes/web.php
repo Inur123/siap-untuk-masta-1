@@ -9,7 +9,9 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\BrowserInfoController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\LoginHistoryController;
 use App\Http\Controllers\Operator\OperatorController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -75,6 +77,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/admin/export-users-to-word', [AdminController::class, 'exportUsersToWord'])->name('admin.exportUsersToWord');
 
     // sertifikat
+    Route::get('/login-history', [LoginHistoryController::class, 'showLoginHistory'])->name('login-history');
 
 
 
@@ -203,3 +206,8 @@ Route::middleware('auth')->get('/sertifikat/download/{id}', [CertificateControll
 
 
 Route::get('/kritik-saran', [Controller::class, 'kritikSaran'])->name('kritik-saran');
+
+
+Route::get('/browser-info', [BrowserInfoController::class, 'showBrowserInfo']);
+
+

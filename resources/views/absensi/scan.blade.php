@@ -10,7 +10,7 @@
         <h1 class="mb-4">Scan QR Code untuk Kegiatan: {{ $kegiatan->nama_kegiatan }}</h1>
 
         <!-- QR Code Scanner -->
-        <div id="qr-reader" style="width: 600px; height: 400px; margin-bottom: 20px;"></div>
+        <div id="qr-reader" style="width: 600px; height: 400px; margin-bottom: 20px;" class="mx-auto"></div>
 
         <!-- Displaying scan result -->
         <div id="result"></div>
@@ -49,6 +49,8 @@
         console.log(data);  // Debugging: Check what data is returned from the server
 
         if (data.berhasil) {
+            let successSound = new Audio("{{ url('sounds/berhasil-absen.wav') }}");
+            successSound.play();
             document.getElementById('result').innerHTML = `
                 <div class="alert alert-success">
                     <strong>Absensi berhasil!</strong><br>

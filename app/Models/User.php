@@ -51,5 +51,9 @@ class User extends Authenticatable
         return $this->belongsTo(Kegiatan::class);
     }
 
+    public function loginHistory()
+    {
+        return $this->hasMany(LoginHistory::class);
+    }
 
 }

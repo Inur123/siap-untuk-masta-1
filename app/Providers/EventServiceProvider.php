@@ -23,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         UserRegistered::class => [
             AddAbsensiForNewUser::class,
         ],
+        \Illuminate\Auth\Events\Login::class => [
+            \App\Listeners\LogSuccessfulLogin::class,
+        ],
     ];
 
     /**

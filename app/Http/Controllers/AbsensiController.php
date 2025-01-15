@@ -81,7 +81,8 @@ class AbsensiController extends Controller
                 'berhasil' => true,
                 'name' => $user->name,
                 'nim' => $user->nim,
-                'kegiatan' => $kegiatan->nama_kegiatan,  // Return the kegiatan name
+                'kegiatan' => $kegiatan->nama_kegiatan,
+                'suara' => url('sounds/behasil-absen.wav')  // Return the kegiatan name
             ]);
         } else {
             return response()->json(['status_error' => 'Pengguna tidak ditemukan']);
