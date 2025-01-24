@@ -18,10 +18,17 @@ class MahasiswaController extends Controller
         // Hitung total mahasiswa
         $totalMahasiswa = User::where('role', 'mahasiswa')->count();
 
+        // Ambil 5 mahasiswa terbaru
+        $latestMahasiswa = User::where('role', 'mahasiswa')
+            ->orderBy('created_at', 'desc')
+            ->get(['name','nim' ,'fakultas', 'prodi','kelompok']);  // Ambil hanya nama, fakultas, dan prodi
+
         // Return JSON response
         return response()->json([
             'status' => 'success',
             'totalMahasiswa' => $totalMahasiswa,
+            'latestMahasiswa' => $latestMahasiswa,
         ]);
+
     }
 }
