@@ -53,12 +53,47 @@
 
     <h2>Data Mahasiswa Kelompok Kamu</h2>
 
-    @if ($students->isEmpty())
+    {{-- @if ($students->isEmpty())
         <p>Maaf belum ada mahasiswa yang masuk ke kelompok kamu</p>
-    @else
-        <p class="mb-0">Total Mahasiswa: {{ $students->count() }}</p> <!-- Display total number of students -->
-        <p  class="mb-0">Total Laki Laki:  {{ $students->where('jeniskelamin', 'Laki-Laki')->count() }}</p>
-        <p class="mb-0">Total Perempuan:  {{ $students->where('jeniskelamin', 'Perempuan')->count() }}</p> <!-- Display total number of students -->
+    @else --}}
+    <div class="row g-4 mb-4">
+        <!-- Total Mahasiswa -->
+        <div class="col-6 col-lg-4">
+            <div class="app-card app-card-stat shadow-sm h-100">
+                <div class="app-card-body p-3 p-lg-4">
+                    <h4 class="stats-type mb-1">Total Mahasiswa</h4>
+                    <div class="stats-figure">{{ $students->count() }}</div>
+                </div>
+                <a class="app-card-link-mask" href="#"></a>
+            </div>
+        </div>
+
+        <!-- Total Laki-Laki -->
+        <div class="col-6 col-lg-4">
+            <div class="app-card app-card-stat shadow-sm h-100">
+                <div class="app-card-body p-3 p-lg-4">
+                    <h4 class="stats-type mb-1">Total Laki-Laki</h4>
+                    <div class="stats-figure">
+                        {{ $students->where('jeniskelamin', 'Laki-Laki')->count() }}
+                    </div>
+                </div>
+                <a class="app-card-link-mask" href="#"></a>
+            </div>
+        </div>
+
+        <!-- Total Perempuan -->
+        <div class="col-6 col-lg-4">
+            <div class="app-card app-card-stat shadow-sm h-100">
+                <div class="app-card-body p-3 p-lg-4">
+                    <h4 class="stats-type mb-1">Total Perempuan</h4>
+                    <div class="stats-figure">
+                        {{ $students->where('jeniskelamin', 'Perempuan')->count() }}
+                    </div>
+                </div>
+                <a class="app-card-link-mask" href="#"></a>
+            </div>
+        </div>
+    </div>
         <!-- Display total number of students -->
         <div class="mb-1">
             <a href="{{ route('operator.exportExcel') }}" class="btn btn-success">Export Excel</a>
@@ -114,7 +149,7 @@
                 @endforeach
             </tbody>
         </table>
-    @endif
+
     <div class="pagination-wrapper" style="margin-top: 20px; text-align: end;">
         <style>
             /* Inactive page links */

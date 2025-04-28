@@ -62,51 +62,56 @@
     </div>
 
     <h4>Absensi Mahasiswa Kelompok {{ $operator->kelompok }}</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Mahasiswa</th>
-                <th>NIM</th>
-                <th>Status Absensi</th>
-                <th>Tanggal Absen</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($kegiatan->absensi as $absensi)
+    <div style="max-height: 500px; overflow: auto; border: 1px solid #ddd; border-radius: 5px;">
+        <table class="table table-bordered" style="width: 100%; border-collapse: collapse; min-width: 1200px;">
+            <thead style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $absensi->user->name }}</td>
-                    <td>{{ $absensi->user->nim }}</td>
-                    <td>
-                        <div class="d-flex">
-                            <div class="form-check me-2">
-                                <input class="form-check-input" type="radio" name="status[{{ $absensi->user->id }}]" value="hadir"
-                                       {{ $absensi->status == 'hadir' ? 'checked' : '' }}
-                                       data-user-id="{{ $absensi->user->id }}" data-status="hadir">
-                                <label class="form-check-label">Hadir</label>
-                            </div>
-                            <div class="form-check me-2">
-                                <input class="form-check-input" type="radio" name="status[{{ $absensi->user->id }}]" value="tidak_hadir"
-                                       {{ $absensi->status == 'tidak_hadir' ? 'checked' : '' }}
-                                       data-user-id="{{ $absensi->user->id }}" data-status="tidak_hadir">
-                                <label class="form-check-label">Tidak Hadir</label>
-                            </div>
-                            <div class="form-check me-2">
-                                <input class="form-check-input" type="radio" name="status[{{ $absensi->user->id }}]" value="izin"
-                                       {{ $absensi->status == 'izin' ? 'checked' : '' }}
-                                       data-user-id="{{ $absensi->user->id }}" data-status="izin">
-                                <label class="form-check-label">Izin</label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>{{ $absensi->created_at->format('d-m-Y | H:i') }}</td> <!-- Tanggal absen -->
+                    <th>No</th>
+                    <th>Nama Mahasiswa</th>
+                    <th>NIM</th>
+                    <th>Status Absensi</th>
+                    <th>Tanggal Absen</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($kegiatan->absensi as $absensi)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $absensi->user->name }}</td>
+                        <td>{{ $absensi->user->nim }}</td>
+                        <td>
+                            <div class="d-flex">
+                                <div class="form-check me-2">
+                                    <input class="form-check-input" type="radio"
+                                        name="status[{{ $absensi->user->id }}]" value="hadir"
+                                        {{ $absensi->status == 'hadir' ? 'checked' : '' }}
+                                        data-user-id="{{ $absensi->user->id }}" data-status="hadir">
+                                    <label class="form-check-label">Hadir</label>
+                                </div>
+                                <div class="form-check me-2">
+                                    <input class="form-check-input" type="radio"
+                                        name="status[{{ $absensi->user->id }}]" value="tidak_hadir"
+                                        {{ $absensi->status == 'tidak_hadir' ? 'checked' : '' }}
+                                        data-user-id="{{ $absensi->user->id }}" data-status="tidak_hadir">
+                                    <label class="form-check-label">Tidak Hadir</label>
+                                </div>
+                                <div class="form-check me-2">
+                                    <input class="form-check-input" type="radio"
+                                        name="status[{{ $absensi->user->id }}]" value="izin"
+                                        {{ $absensi->status == 'izin' ? 'checked' : '' }}
+                                        data-user-id="{{ $absensi->user->id }}" data-status="izin">
+                                    <label class="form-check-label">Izin</label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ $absensi->created_at->format('d-m-Y | H:i') }}</td> <!-- Tanggal absen -->
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
-    <a href="{{ route('operator.absensi') }}" class="btn btn-secondary">Kembali ke Daftar Kegiatan</a>
+    <a href="{{ route('operator.absensi') }}" class="btn btn-secondary mt-2">Kembali ke Daftar Kegiatan</a>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

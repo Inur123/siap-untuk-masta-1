@@ -37,8 +37,8 @@ class AdminController extends Controller
         $totalAdmin = User::where('role', 'admin')->count();
         $totalOperator = User::where('role', 'operator')->count();
         $totalGroups = User::whereNotNull('kelompok') // Ensure kelompok is not null
-        ->distinct('kelompok') // Get distinct kelompok values
-        ->count('kelompok'); // Count the number of unique kelompok values
+            ->distinct('kelompok') // Get distinct kelompok values
+            ->count('kelompok'); // Count the number of unique kelompok values
         // Calculate the total number of members in each faculty (fakultas)
         $totalMembersPerFakultas = User::where('role', 'mahasiswa')
             ->select('fakultas', DB::raw('count(*) as total'))
@@ -64,9 +64,9 @@ class AdminController extends Controller
 
         // Retrieve user registration data for the week (Monday to Sunday)
         $registrations = User::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('count(*) as count')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('count(*) as count')
+        )
             ->where('created_at', '>=', now()->startOfWeek()) // Start of the week (Monday)
             ->where('created_at', '<=', now()->endOfWeek()) // End of the week (Sunday)
             ->groupBy('date')
@@ -189,22 +189,22 @@ class AdminController extends Controller
     }
 
     public function clearMahasiswa()
-{
-    // Retrieve all 'mahasiswa' users
-    $mahasiswaUsers = User::where('role', 'mahasiswa')->get();
+    {
+        // Retrieve all 'mahasiswa' users
+        $mahasiswaUsers = User::where('role', 'mahasiswa')->get();
 
-    foreach ($mahasiswaUsers as $user) {
-        // Delete file if it exists
-        if ($user->file) {
-            Storage::delete($user->file);
+        foreach ($mahasiswaUsers as $user) {
+            // Delete file if it exists
+            if ($user->file) {
+                Storage::delete($user->file);
+            }
+
+            // Delete the user
+            $user->delete();
         }
 
-        // Delete the user
-        $user->delete();
+        return redirect()->route('admin.users')->with('success', 'All mahasiswa users and their data have been cleared successfully!');
     }
-
-    return redirect()->route('admin.users')->with('success', 'All mahasiswa users and their data have been cleared successfully!');
-}
 
     /**
      * Show the edit form for a user.
@@ -271,354 +271,378 @@ class AdminController extends Controller
 
     //create data operator
     public function createOperator()
+    {
+        return view('admin.create_operator'); // Create a view for the form
+    }
+    /**
+     * Store a newly created operator in the database.
+     */
+    public function storeOperator(Request $request)
+    {
+        // Validasi data yang diterima dari form
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'nim' => 'required|numeric|digits_between:8,15|unique:users,nim',
+            'kelompok' => 'nullable|string|max:50',
+            'fakultas' => 'nullable|string|max:100',
+            'prodi' => 'nullable|string|max:100',
+            'nohp' => 'nullable|string|max:15|unique:users,nohp',
+        ], [
+            'name.required' => 'Nama wajib diisi',
+            'name.max' => 'Nama maksimal 255 karakter',
+            'nim.required' => 'NIM wajib diisi',
+            'nim.numeric' => 'NIM harus berupa angka',
+            'nim.digits_between' => 'NIM harus antara 8-15 digit',
+            'nim.unique' => 'NIM sudah digunakan',
+            'nohp.max' => 'Nomor HP maksimal 15 karakter',
+            'nohp.unique' => 'Nomor HP sudah digunakan',
+        ]);
+
+        // Siapkan data untuk pembuatan user
+        $data = [
+            'name' => $validatedData['name'],
+            'nim' => $validatedData['nim'],
+            'password' => bcrypt('password'), // Password default
+            'role' => 'operator', // Role default adalah operator
+            'kelompok' => $validatedData['kelompok'] ?? null,
+            'fakultas' => $validatedData['fakultas'] ?? null,
+            'prodi' => $validatedData['prodi'] ?? null,
+            'nohp' => $validatedData['nohp'] ?? null,
+        ];
+
+        try {
+            // Membuat user baru dengan data yang telah disiapkan
+            User::create($data);
+
+            // Redirect ke halaman pengguna dengan pesan sukses
+            return redirect()->route('admin.operators')->with('success', 'Pemandu berhasil dibuat!');
+        } catch (\Exception $e) {
+            // Jika terjadi error saat menyimpan
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal membuat pemandu: ' . $e->getMessage());
+        }
+    }
+
+
+
+    public function editOperator($id)
+    {
+        $operator = User::findOrFail($id); // Ambil data operator berdasarkan ID
+        return view('admin.edit_operator', compact('operator')); // Tampilkan view edit
+    }
+    public function destroyOperator($id)
+    {
+        // Find the operator by ID or fail if not found
+        $operator = User::findOrFail($id);
+
+        // Delete the operator from the database
+        $operator->delete();
+
+        // Redirect back with a success message
+        return redirect()->route('admin.operators')->with('success', 'Pemandu deleted successfully!');
+    }
+
+    public function updateOperator(Request $request, $id)
 {
-    return view('admin.create_operator'); // Create a view for the form
-}
-/**
- * Store a newly created operator in the database.
- */
-public function storeOperator(Request $request)
-{
-    // Validasi data yang diterima dari form
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'nim' => 'required|numeric|digits_between:10,15', // Validasi NIM sebagai angka dan panjang antara 10 hingga 15 digit
-        'kelompok' => 'nullable|string|max:50', // Kelompok bersifat opsional
-        'fakultas' => 'nullable|string|max:100', // Fakultas bersifat opsional
-        'prodi' => 'nullable|string|max:100', // Prodi bersifat opsional
-    ]);
-
-    // Siapkan data untuk pembuatan user
-    $data = [
-        'name' => $request->name,
-        'nim' => $request->nim,
-        'password' => bcrypt('password'), // Password default
-        'role' => 'operator', // Role default adalah operator
-        'kelompok' => $request->kelompok,
-        'fakultas' => $request->fakultas,
-        'prodi' => $request->prodi,
-    ];
-
-    // Membuat user baru dengan data yang telah disiapkan
-    User::create($data);
-
-    // Redirect ke halaman pengguna dengan pesan sukses
-    return redirect()->route('admin.operators')->with('success', 'Pemandu created successfully!');
-}
-
-
-public function editOperator($id)
-{
-    $operator = User::findOrFail($id); // Ambil data operator berdasarkan ID
-    return view('admin.edit_operator', compact('operator')); // Tampilkan view edit
-}
-public function destroyOperator($id)
-{
-    // Find the operator by ID or fail if not found
+    // Get the operator to be updated
     $operator = User::findOrFail($id);
 
-    // Delete the operator from the database
-    $operator->delete();
-
-    // Redirect back with a success message
-    return redirect()->route('admin.operators')->with('success', 'Pemandu deleted successfully!');
-}
-
-public function updateOperator(Request $request, $id)
-{
-    // Ambil data operator yang ingin diperbarui
-    $operator = User::findOrFail($id);
-
-    // Validasi data input
-    $request->validate([
+    // Validation rules
+    $rules = [
         'name' => 'required|string|max:255',
-        'nim' => 'required|string|max:50',
-        'email' => 'required|email|unique:users,email,' . $id, // Abaikan email saat ini
+        'nim' => 'required|string|max:50|unique:users,nim,'.$operator->id,
         'kelompok' => 'nullable|string',
         'fakultas' => 'nullable|string',
         'prodi' => 'nullable|string',
-        'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // File opsional
-    ]);
 
-    // Update data operator
-    $data = $request->only(['name', 'nim', 'email', 'kelompok', 'fakultas', 'prodi']);
+    ];
 
-    // Cek jika ada file baru yang diupload
-    if ($request->hasFile('file')) {
-        // Upload file baru
-        $filePath = $request->file('file')->store('files');
+    // Special rule for nohp - ignore current record for unique check
+    $rules['nohp'] = 'nullable|string|max:15|unique:users,nohp,'.$operator->id;
 
-        // Hapus file lama jika ada
-        if ($operator->file) {
-            Storage::delete($operator->file);
+    // Custom validation messages
+    $messages = [
+        'name.required' => 'Nama wajib diisi',
+        'name.max' => 'Nama maksimal 255 karakter',
+        'nim.required' => 'NIM wajib diisi',
+        'nim.max' => 'NIM maksimal 50 karakter',
+        'nim.unique' => 'NIM sudah digunakan',
+        'nohp.max' => 'Nomor HP maksimal 15 karakter',
+        'nohp.unique' => 'Nomor HP sudah digunakan',
+    ];
+
+    // Validate the request with custom messages
+    $validatedData = $request->validate($rules, $messages);
+
+    // Update only the fields that are present in the request
+    $operator->name = $validatedData['name'];
+    $operator->nim = $validatedData['nim'];
+
+    // Update optional fields if they exist in the request
+    $operator->kelompok = $request->has('kelompok') ? $validatedData['kelompok'] : $operator->kelompok;
+    $operator->fakultas = $request->has('fakultas') ? $validatedData['fakultas'] : $operator->fakultas;
+    $operator->prodi = $request->has('prodi') ? $validatedData['prodi'] : $operator->prodi;
+
+    // Handle nohp specially to maintain existing value if not changed
+    if ($request->has('nohp') && $request->nohp !== $operator->nohp) {
+        $operator->nohp = $validatedData['nohp'];
+    }
+
+
+
+    // Save the changes
+    $operator->save();
+
+    return redirect()->route('admin.operators')->with('success', 'Data pemandu berhasil diperbarui!');
+}
+
+
+    // Menampilkan form untuk membuat pengumuman
+    public function createAnnouncement()
+    {
+        // Mengambil semua pengumuman, atau bisa disesuaikan jika perlu
+        $announcements = Announcement::all();
+
+        // Kembalikan view create_announcement.blade.php
+        return view('admin.create_announcement', compact('announcements'));
+    }
+
+    // Menyimpan pengumuman baru
+    public function storeAnnouncement(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'role' => 'required|in:operator,mahasiswa',
+        ]);
+
+        // Membuat pengumuman baru dan menyimpannya di database
+        Announcement::create($request->only('title', 'content', 'role'));
+
+        // Redirect ke halaman create announcement dengan pesan sukses
+        return redirect()->route('admin.create_announcement')->with('success', 'Announcement created successfully!');
+    }
+
+    // Mendapatkan pengumuman berdasarkan role (admin hanya mengelola pengumuman mahasiswa)
+    public function getAnnouncementsByRole()
+    {
+        $role = auth()->user()->role; // Mendapatkan role dari user yang login
+
+        // Ambil pengumuman berdasarkan role yang sedang aktif
+        $announcements = Announcement::where('role', $role)->where('is_active', true)->latest()->get();
+
+        // Kirimkan pengumuman ke view dashboard admin
+        return view('admin.dashboard', compact('announcements'));
+    }
+
+    // Mengubah status aktif/tidak aktif pengumuman
+    public function toggleAnnouncementStatus($id)
+    {
+        // Mencari pengumuman berdasarkan ID
+        $announcement = Announcement::findOrFail($id);
+
+        // Toggle status 'is_active' pengumuman
+        $announcement->is_active = !$announcement->is_active;
+        $announcement->save();
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->route('admin.create_announcement')->with('success', 'Announcement status updated successfully!');
+    }
+
+    // Menghapus pengumuman
+    public function destroyAnnouncement($id)
+    {
+        // Cari pengumuman berdasarkan ID dan hapus
+        $announcement = Announcement::findOrFail($id);
+        $announcement->delete();
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('admin.create_announcement')->with('success', 'Announcement deleted successfully!');
+    }
+
+    // Mengupdate pengumuman
+    public function updateAnnouncement(Request $request, $id)
+    {
+        // Validasi data yang diterima
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'role' => 'required|in:operator,mahasiswa',
+        ]);
+
+        // Mencari pengumuman berdasarkan ID
+        $announcement = Announcement::findOrFail($id);
+
+        // Update pengumuman dengan data yang baru
+        $announcement->update($request->only('title', 'content', 'role'));
+
+        // Redirect ke halaman create_announcement dengan pesan sukses
+        return redirect()->route('admin.create_announcement')->with('success', 'Announcement updated successfully!');
+    }
+
+    public function showOperators()
+    {
+        // Get all users with role 'operator'
+        $operators = User::where('role', 'operator')->get(); // You can adjust the condition if needed
+
+        // Return view with operator data
+        return view('admin.operators', compact('operators'));
+    }
+
+    public function showMahasiswa()
+    {
+        // Get all users with role 'operator'
+        $mahasiswa = User::where('role', 'mahasiswa')->get(); // You can adjust the condition if needed
+
+        // Return view with operator data
+        return view('admin.mahasiswa', compact('mahasiswa'));
+    }
+
+    public function showGroups()
+    {
+        // Ambil semua data mahasiswa dengan informasi kelompok, fakultas, nim, nama, dan prodi
+        $groups = User::select('kelompok', 'fakultas', 'nim', 'name', 'prodi')
+            ->where('role', 'mahasiswa')  // Filter hanya mahasiswa
+            ->get(); // Ambil semua data tanpa batasan
+
+        // Gunakan collection untuk mengelompokkan data berdasarkan 'kelompok'
+        $groupDetails = $groups->groupBy('kelompok');
+
+        // Loop untuk mendapatkan anggota berdasarkan kelompok
+        foreach ($groupDetails as $kelompok => $group) {
+            // Tambahkan data anggota untuk setiap kelompok
+            $groupDetails[$kelompok] = [
+                'kelompok' => $kelompok,
+                'fakultas' => $group->first()->fakultas, // Ambil fakultas dari anggota pertama
+                'members' => $group, // Anggota yang sudah dikelompokkan berdasarkan 'kelompok'
+                'memberCount' => $group->count() // Tambahkan jumlah anggota dalam kelompok
+            ];
         }
 
-        // Tambahkan path file baru ke data
-        $data['file'] = $filePath;
+        // Pass groupDetails ke view
+        return view('admin.groups', ['groupDetails' => $groupDetails]);
     }
 
-    // Update data operator
-    $operator->update($data);
-
-    return redirect()->route('admin.operators')->with('success', 'Operator updated successfully!');
-}
 
 
-// Menampilkan form untuk membuat pengumuman
-public function createAnnouncement()
-{
-    // Mengambil semua pengumuman, atau bisa disesuaikan jika perlu
-    $announcements = Announcement::all();
 
-    // Kembalikan view create_announcement.blade.php
-    return view('admin.create_announcement', compact('announcements'));
-}
+    public function showGroupDetail($kelompok)
+    {
+        // Ambil semua anggota dalam kelompok tersebut
+        $groupMembers = User::where('kelompok', $kelompok)
+            ->where('role', 'mahasiswa')
+            ->get();
 
-// Menyimpan pengumuman baru
-public function storeAnnouncement(Request $request)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-        'role' => 'required|in:operator,mahasiswa',
-    ]);
+        // Jika kelompok tidak ada anggota, redirect ke halaman groups
+        if ($groupMembers->isEmpty()) {
+            return redirect()->route('admin.groups')->with('error', 'Kelompok tidak ditemukan atau kosong.');
+        }
 
-    // Membuat pengumuman baru dan menyimpannya di database
-    Announcement::create($request->only('title', 'content', 'role'));
+        // Ambil detail kelompok lainnya (seperti fakultas, dll) jika diperlukan
+        $groupDetail = $groupMembers->first(); // Misalnya menggunakan anggota pertama untuk mendapatkan fakultas atau data lainnya
 
-    // Redirect ke halaman create announcement dengan pesan sukses
-    return redirect()->route('admin.create_announcement')->with('success', 'Announcement created successfully!');
-}
+        // Ambil Nama Pemandu dan Nomor HP Pemandu (dari user dengan role 'operator' yang memiliki kelompok yang sama)
+        $operator = User::where('role', 'operator')
+            ->where('kelompok', $kelompok) // Pastikan operator dalam kelompok yang sama
+            ->first();
 
-// Mendapatkan pengumuman berdasarkan role (admin hanya mengelola pengumuman mahasiswa)
-public function getAnnouncementsByRole()
-{
-    $role = auth()->user()->role; // Mendapatkan role dari user yang login
+        // Jika tidak ada operator untuk kelompok ini, bisa diatur untuk tampilkan pesan atau nilai default
+        $pemanduName = $operator ? $operator->name : 'Belum ada pemandu';
+        $pemanduPhone = $operator ? $operator->nohp : 'N/A';
 
-    // Ambil pengumuman berdasarkan role yang sedang aktif
-    $announcements = Announcement::where('role', $role)->where('is_active', true)->latest()->get();
-
-    // Kirimkan pengumuman ke view dashboard admin
-    return view('admin.dashboard', compact('announcements'));
-}
-
-// Mengubah status aktif/tidak aktif pengumuman
-public function toggleAnnouncementStatus($id)
-{
-    // Mencari pengumuman berdasarkan ID
-    $announcement = Announcement::findOrFail($id);
-
-    // Toggle status 'is_active' pengumuman
-    $announcement->is_active = !$announcement->is_active;
-    $announcement->save();
-
-    // Redirect kembali dengan pesan sukses
-    return redirect()->route('admin.create_announcement')->with('success', 'Announcement status updated successfully!');
-}
-
-// Menghapus pengumuman
-public function destroyAnnouncement($id)
-{
-    // Cari pengumuman berdasarkan ID dan hapus
-    $announcement = Announcement::findOrFail($id);
-    $announcement->delete();
-
-    // Redirect dengan pesan sukses
-    return redirect()->route('admin.create_announcement')->with('success', 'Announcement deleted successfully!');
-}
-
-// Mengupdate pengumuman
-public function updateAnnouncement(Request $request, $id)
-{
-    // Validasi data yang diterima
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-        'role' => 'required|in:operator,mahasiswa',
-    ]);
-
-    // Mencari pengumuman berdasarkan ID
-    $announcement = Announcement::findOrFail($id);
-
-    // Update pengumuman dengan data yang baru
-    $announcement->update($request->only('title', 'content', 'role'));
-
-    // Redirect ke halaman create_announcement dengan pesan sukses
-    return redirect()->route('admin.create_announcement')->with('success', 'Announcement updated successfully!');
-}
-
-public function showOperators()
-{
-    // Get all users with role 'operator'
-    $operators = User::where('role', 'operator')->get(); // You can adjust the condition if needed
-
-    // Return view with operator data
-    return view('admin.operators', compact('operators'));
-}
-
-public function showMahasiswa()
-{
-    // Get all users with role 'operator'
-    $mahasiswa = User::where('role', 'mahasiswa')->get(); // You can adjust the condition if needed
-
-    // Return view with operator data
-    return view('admin.mahasiswa', compact('mahasiswa'));
-}
-
-public function showGroups()
-{
-    // Ambil semua data mahasiswa dengan informasi kelompok, fakultas, nim, nama, dan prodi
-    $groups = User::select('kelompok', 'fakultas', 'nim', 'name', 'prodi')
-                  ->where('role', 'mahasiswa')  // Filter hanya mahasiswa
-                  ->get(); // Ambil semua data tanpa batasan
-
-    // Gunakan collection untuk mengelompokkan data berdasarkan 'kelompok'
-    $groupDetails = $groups->groupBy('kelompok');
-
-    // Loop untuk mendapatkan anggota berdasarkan kelompok
-    foreach ($groupDetails as $kelompok => $group) {
-        // Tambahkan data anggota untuk setiap kelompok
-        $groupDetails[$kelompok] = [
-            'kelompok' => $kelompok,
-            'fakultas' => $group->first()->fakultas, // Ambil fakultas dari anggota pertama
-            'members' => $group, // Anggota yang sudah dikelompokkan berdasarkan 'kelompok'
-            'memberCount' => $group->count() // Tambahkan jumlah anggota dalam kelompok
-        ];
+        // Kirim data kelompok, anggota, dan pemandu ke view
+        return view('admin.groupDetail', compact('groupMembers', 'groupDetail', 'pemanduName', 'pemanduPhone'));
     }
 
-    // Pass groupDetails ke view
-    return view('admin.groups', ['groupDetails' => $groupDetails]);
-}
-
-
-
-
-public function showGroupDetail($kelompok)
-{
-    // Ambil semua anggota dalam kelompok tersebut
-    $groupMembers = User::where('kelompok', $kelompok)
-                        ->where('role', 'mahasiswa')
-                        ->get();
-
-    // Jika kelompok tidak ada anggota, redirect ke halaman groups
-    if ($groupMembers->isEmpty()) {
-        return redirect()->route('admin.groups')->with('error', 'Kelompok tidak ditemukan atau kosong.');
+    // Export functionality for the specific group
+    public function exportGroupMembersToExcel($kelompok)
+    {
+        return Excel::download(new GroupMembersExport($kelompok), 'group_' . $kelompok . '_members.xlsx');
     }
 
-    // Ambil detail kelompok lainnya (seperti fakultas, dll) jika diperlukan
-    $groupDetail = $groupMembers->first(); // Misalnya menggunakan anggota pertama untuk mendapatkan fakultas atau data lainnya
+    public function exportUsersToExcel()
+    {
+        return Excel::download(new UsersExport, 'users.xlsx');
+    }
+    public function exportGroupMembersToWord($kelompok)
+    {
+        // Buat objek PhpWord
+        $phpWord = new PhpWord();
 
-    // Ambil Nama Pemandu dan Nomor HP Pemandu (dari user dengan role 'operator' yang memiliki kelompok yang sama)
-    $operator = User::where('role', 'operator')
-                    ->where('kelompok', $kelompok) // Pastikan operator dalam kelompok yang sama
-                    ->first();
+        // Tambahkan bagian atau halaman baru
+        $section = $phpWord->addSection();
 
-    // Jika tidak ada operator untuk kelompok ini, bisa diatur untuk tampilkan pesan atau nilai default
-    $pemanduName = $operator ? $operator->name : 'Belum ada pemandu';
-    $pemanduPhone = $operator ? $operator->nohp : 'N/A';
+        // Set title
+        $section->addText("Group $kelompok Members", array('name' => 'Arial', 'size' => 14, 'bold' => true));
 
-    // Kirim data kelompok, anggota, dan pemandu ke view
-    return view('admin.groupDetail', compact('groupMembers', 'groupDetail', 'pemanduName', 'pemanduPhone'));
-}
+        // Ambil data anggota kelompok dengan role 'mahasiswa'
+        $members = DB::table('users')
+            ->where('kelompok', $kelompok)
+            ->where('role', 'mahasiswa') // Menambahkan filter berdasarkan role
+            ->get();
 
-// Export functionality for the specific group
-public function exportGroupMembersToExcel($kelompok)
-{
-    return Excel::download(new GroupMembersExport($kelompok), 'group_'.$kelompok.'_members.xlsx');
-}
-
-public function exportUsersToExcel()
-{
-    return Excel::download(new UsersExport, 'users.xlsx');
-}
-public function exportGroupMembersToWord($kelompok)
-{
-    // Buat objek PhpWord
-    $phpWord = new PhpWord();
-
-    // Tambahkan bagian atau halaman baru
-    $section = $phpWord->addSection();
-
-    // Set title
-    $section->addText("Group $kelompok Members", array('name' => 'Arial', 'size' => 14, 'bold' => true));
-
-    // Ambil data anggota kelompok dengan role 'mahasiswa'
-    $members = DB::table('users')
-        ->where('kelompok', $kelompok)
-        ->where('role', 'mahasiswa') // Menambahkan filter berdasarkan role
-        ->get();
-
-    // Tambahkan data anggota kelompok ke dalam tabel
-    $table = $section->addTable();
-    $table->addRow();
-    $table->addCell(2000)->addText('Name');
-    $table->addCell(2000)->addText('NIM');
-    $table->addCell(2000)->addText('Email');
-
-    foreach ($members as $member) {
+        // Tambahkan data anggota kelompok ke dalam tabel
+        $table = $section->addTable();
         $table->addRow();
-        $table->addCell(2000)->addText($member->name);
-        $table->addCell(2000)->addText($member->nim);
-        $table->addCell(2000)->addText($member->email);
+        $table->addCell(2000)->addText('Name');
+        $table->addCell(2000)->addText('NIM');
+        $table->addCell(2000)->addText('Email');
+
+        foreach ($members as $member) {
+            $table->addRow();
+            $table->addCell(2000)->addText($member->name);
+            $table->addCell(2000)->addText($member->nim);
+            $table->addCell(2000)->addText($member->email);
+        }
+
+        // Output ke file Word
+        $fileName = 'group_' . $kelompok . '_members.docx';
+        $filePath = storage_path('app/public/' . $fileName);
+
+        $phpWord->save($filePath);
+
+        return response()->download($filePath);
     }
 
-    // Output ke file Word
-    $fileName = 'group_' . $kelompok . '_members.docx';
-    $filePath = storage_path('app/public/' . $fileName);
 
-    $phpWord->save($filePath);
+    // Export to Word for all users
+    public function exportUsersToWord()
+    {
+        // Buat objek PhpWord
+        $phpWord = new PhpWord();
 
-    return response()->download($filePath);
-}
+        // Tambahkan bagian atau halaman baru
+        $section = $phpWord->addSection();
 
+        // Set title
+        $section->addText("All Mahasiswa Users", array('name' => 'Arial', 'size' => 14, 'bold' => true));
 
-// Export to Word for all users
-public function exportUsersToWord()
-{
-    // Buat objek PhpWord
-    $phpWord = new PhpWord();
+        // Ambil data pengguna dengan role 'mahasiswa'
+        $users = DB::table('users')
+            ->where('role', 'mahasiswa') // Menambahkan filter berdasarkan role
+            ->get();
 
-    // Tambahkan bagian atau halaman baru
-    $section = $phpWord->addSection();
-
-    // Set title
-    $section->addText("All Mahasiswa Users", array('name' => 'Arial', 'size' => 14, 'bold' => true));
-
-    // Ambil data pengguna dengan role 'mahasiswa'
-    $users = DB::table('users')
-        ->where('role', 'mahasiswa') // Menambahkan filter berdasarkan role
-        ->get();
-
-    // Tambahkan data pengguna ke dalam tabel
-    $table = $section->addTable();
-    $table->addRow();
-    $table->addCell(2000)->addText('Name');
-    $table->addCell(2000)->addText('NIM');
-    $table->addCell(2000)->addText('Email');
-
-    foreach ($users as $user) {
+        // Tambahkan data pengguna ke dalam tabel
+        $table = $section->addTable();
         $table->addRow();
-        $table->addCell(2000)->addText($user->name);
-        $table->addCell(2000)->addText($user->nim);
-        $table->addCell(2000)->addText($user->email);
+        $table->addCell(2000)->addText('Name');
+        $table->addCell(2000)->addText('NIM');
+        $table->addCell(2000)->addText('Email');
+
+        foreach ($users as $user) {
+            $table->addRow();
+            $table->addCell(2000)->addText($user->name);
+            $table->addCell(2000)->addText($user->nim);
+            $table->addCell(2000)->addText($user->email);
+        }
+
+        // Output ke file Word
+        $fileName = 'mahasiswa_users.docx';
+        $filePath = storage_path('app/public/' . $fileName);
+
+        $phpWord->save($filePath);
+
+        return response()->download($filePath);
     }
-
-    // Output ke file Word
-    $fileName = 'mahasiswa_users.docx';
-    $filePath = storage_path('app/public/' . $fileName);
-
-    $phpWord->save($filePath);
-
-    return response()->download($filePath);
-}
-
-
-
-
-
-
-
-
-
-
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>MASTAMARU 2025</title>
 
@@ -21,29 +22,32 @@
         /* Menghilangkan tombol up/down pada input number */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         input[type="number"] {
-          -moz-appearance: textfield; /* Untuk Firefox */
+            -moz-appearance: textfield;
+            /* Untuk Firefox */
         }
 
         .eye-icon {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          cursor: pointer;
-          z-index: 10; /* Tambahkan z-index agar ikon berada di atas */
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 10;
+            /* Tambahkan z-index agar ikon berada di atas */
         }
 
         .input-group {
-          position: relative;
+            position: relative;
         }
 
         .input-group input {
-          padding-right: 30px; /* Untuk memberi ruang bagi ikon */
+            padding-right: 30px;
+            /* Untuk memberi ruang bagi ikon */
         }
     </style>
 </head>
@@ -53,23 +57,26 @@
         <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
             <div class="d-flex flex-column align-content-end">
                 <div class="app-auth-body mx-auto">
-                    <div class="app-auth-branding mb-4"><a class="app-logo" href="index.html"><img class="logo-icon me-2" src="{{ asset('template/assets/images/logo-masta24.png') }}" alt="logo"></a></div>
+                    <div class="app-auth-branding mb-4"><a class="app-logo" href="index.html"><img
+                                class="logo-icon me-2" src="{{ asset('template/assets/images/logo-masta24.png') }}"
+                                alt="logo"></a></div>
 
                     <h2 class="auth-heading text-center mb-5">Log in</h2>
                     @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                        <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
-                    @if(session('status'))
-    <div class="alert alert-success" role="alert">
-        {{ session('status') }}
-    </div>
-@endif
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
                     <div class="auth-form-container text-start">
                         <form class="auth-form login-form text-black" method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="email mb-3">
                                 <label for="nim">Nim</label>
-                                <input id="nim" name="nim" type="number" class="form-control signin-email" placeholder="Nim" required value="{{ old('nim') }}">
+                                <input id="nim" name="nim" type="number" class="form-control signin-email"
+                                    placeholder="Nim" required value="{{ old('nim') }}">
                                 @error('nim')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -77,8 +84,11 @@
                             <div class="password mb-0">
                                 <label for="password">Password</label>
                                 <div class="input-group">
-                                    <input id="password" name="password" type="password" class="form-control signin-password" placeholder="Password" required value="{{ old('password') }}">
-                                    <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                                    <input id="password" name="password" type="password"
+                                        class="form-control signin-password" placeholder="Password" required
+                                        value="{{ old('password') }}">
+                                    <i class="fa fa-eye eye-icon" id="togglePassword"
+                                        onclick="togglePasswordVisibility()"></i>
                                 </div>
                                 @error('password')
                                     <small class="text-danger">{{ $message }}</small>
@@ -87,24 +97,29 @@
                             <div class="text-end mb-2">
                                 <a href="{{ route('password.request') }}" class="text-link ">Lupa Password?</a>
                             </div>
-                            <div class="g-recaptcha mb-3" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
+                            <div class="g-recaptcha mb-3" data-sitekey="{{ config('services.recaptcha.sitekey') }}">
+                            </div>
                             @error('g-recaptcha-response')
                                 <small class="text-danger ">{{ $message }}</small>
                             @enderror
 
                             <div class="text-center">
-                                <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Log In</button>
+                                <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Log
+                                    In</button>
                             </div>
                         </form>
 
-                        <div class="auth-option text-center pt-2">Belum punya akun?  <a class="text-link" href="/register" >Daftar</a>.</div>
+                        <div class="auth-option text-center pt-2">Belum punya akun? <a class="text-link"
+                                href="/register">Daftar</a>.</div>
                     </div><!--//auth-form-container-->
 
                 </div><!--//auth-body-->
 
                 <footer class="app-auth-footer">
                     <div class="container text-center py-3">
-                        <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart" style="color: #ff4e21;"></i> by <a class="app-link" href="#" target="_blank">Panitia Mastamaru 2025</a> for developers</small>
+                        <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
+                                style="color: #ff4e21;"></i> by <a class="app-link" href="#"
+                                target="_blank">Panitia Mastamaru 2025</a> for developers</small>
                     </div>
                 </footer><!--//app-auth-footer-->
             </div><!--//flex-column-->
@@ -138,4 +153,5 @@
         }
     </script>
 </body>
+
 </html>
